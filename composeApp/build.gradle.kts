@@ -18,6 +18,20 @@ kotlin {
         }
     }
     
+    // iOS targets
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "ComposeApp"
+            isStatic = true
+            // Export all public APIs
+            export(project)
+        }
+    }
+    
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
@@ -27,6 +41,11 @@ kotlin {
             implementation(libs.play.services.location)
             implementation(libs.zxing.core)
         }
+        
+        iosMain.dependencies {
+            // iOS-specific dependencies (if any)
+        }
+        
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -41,6 +60,33 @@ kotlin {
             implementation(libs.kotlinx.datetime)
         }
     }
+}
+
+// Task to build iOS framework for Xcode
+tasks.register("assembleXCFramework") {
+    dependsOn("linkDebugFrameworkIosArm64", "linkDebugFrameworkIosX64", "linkDebugFrameworkIosSimulatorArm64")
+    dependsOn("linkReleaseFrameworkIosArm64", "linkReleaseFrameworkIosX64", "linkReleaseFrameworkIosSimulatorArm64")
+}
+
+// Sync framework to Xcode build directory
+tasks.register<Sync>("syncFrameworkToXcode") {
+    val configuration = System.getenv("CONFIGURATION") ?: "Debug"
+    val sdkName = System.getenv("SDK_NAME") ?: "iphonesimulator"
+    
+    val targetName = when {
+        sdkName.startsWith("iphoneos") -> "iosArm64"
+        sdkName.startsWith("iphonesimulator") -> {
+            val arch = System.getenv("NATIVE_ARCH") ?: System.getProperty("os.arch")
+            if (arch == "arm64") "iosSimulatorArm64" else "iosX64"
+        }
+        else -> "iosSimulatorArm64"
+    }
+    
+    val frameworkDir = layout.buildDirectory.dir("bin/$targetName/${configuration.lowercase()}Framework")
+    val outputDir = layout.buildDirectory.dir("xcode-frameworks/$configuration/$sdkName")
+    
+    from(frameworkDir)
+    into(outputDir)
 }
 
 android {
