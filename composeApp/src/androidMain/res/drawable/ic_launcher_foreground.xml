@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Background circle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,30 A24,24 0 1,0 54,78 A24,24 0 1,0 54,30Z"/>
+    
+    <!-- Inner circle (outline) -->
+    <path
+        android:fillColor="#E65100"
+        android:pathData="M54,34 A20,20 0 1,0 54,74 A20,20 0 1,0 54,34Z"/>
+    
+    <!-- SOS text background -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M38,48 L70,48 L70,60 L38,60 Z"/>
+    
+    <!-- Center dot (mesh) -->
+    <path
+        android:fillColor="#E65100"
+        android:pathData="M54,48 A6,6 0 1,0 54,60 A6,6 0 1,0 54,48Z"/>
+    
+    <!-- Connection lines -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M54,54 L40,42"/>
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M54,54 L68,42"/>
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M54,54 L40,66"/>
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M54,54 L68,66"/>
+    
+    <!-- Network nodes -->
+    <path
+        android:fillColor="#FF8A65"
+        android:pathData="M40,42 A3,3 0 1,0 40,48 A3,3 0 1,0 40,42Z"/>
+    <path
+        android:fillColor="#FF8A65"
+        android:pathData="M68,42 A3,3 0 1,0 68,48 A3,3 0 1,0 68,42Z"/>
+    <path
+        android:fillColor="#FF8A65"
+        android:pathData="M40,63 A3,3 0 1,0 40,69 A3,3 0 1,0 40,63Z"/>
+    <path
+        android:fillColor="#FF8A65"
+        android:pathData="M68,63 A3,3 0 1,0 68,69 A3,3 0 1,0 68,63Z"/>
+    
+</vector>
