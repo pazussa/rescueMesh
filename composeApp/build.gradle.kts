@@ -27,8 +27,6 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
-            // Export all public APIs
-            export(project)
         }
     }
     

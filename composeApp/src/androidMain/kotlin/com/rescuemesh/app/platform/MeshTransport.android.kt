@@ -55,7 +55,7 @@ class AndroidMeshTransport(
     }
     
     override fun requestInventorySync() {
-        nearbyManager.requestInventorySync()
+        nearbyManager.broadcastInventory()
     }
 }
 
