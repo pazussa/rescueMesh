@@ -61,64 +61,109 @@ rescuemesh/
 │       │       ├── mesh/            # MeshEngine, RoomManager
 │       │       ├── ai/              # OfflineAIEngine
 │       │       ├── localization/    # Strings, LanguageManager
+│       │       ├── platform/        # expect/actual interfaces
 │       │       └── ui/              # Compose UI (screens, components, theme)
 │       │
-│       └── androidMain/             # Android-specific
+│       ├── androidMain/             # Android-specific
+│       │   └── kotlin/com/rescuemesh/app/
+│       │       ├── nearby/          # Google Nearby Connections
+│       │       ├── bluetooth/       # BluetoothStateMonitor
+│       │       ├── persistence/     # SharedPreferences storage
+│       │       ├── platform/        # Platform actual implementations
+│       │       ├── viewmodel/       # Android ViewModel
+│       │       ├── App.kt           # Main navigation
+│       │       └── MainActivity.kt  # Entry point
+│       │
+│       └── iosMain/                 # iOS-specific
 │           └── kotlin/com/rescuemesh/app/
-│               ├── nearby/          # Google Nearby Connections
-│               ├── bluetooth/       # BluetoothStateMonitor
-│               ├── persistence/     # SharedPreferences storage
-│               ├── viewmodel/       # Android ViewModel
-│               ├── App.kt           # Main navigation
-│               └── MainActivity.kt  # Entry point
+│               ├── platform/        # iOS actual implementations
+│               ├── IOSApp.kt        # iOS Compose app
+│               └── MainViewController.kt
+│
+└── iosApp/                          # iOS native project
+    └── iosApp/
+        ├── AppDelegate.swift        # iOS entry point
+        ├── MultipeerService.swift   # MultipeerConnectivity wrapper
+        └── Info.plist               # iOS permissions
 ```
 
 ### Code Sharing Breakdown
 
 | Layer | Location | Shared |
 |-------|----------|--------|
-| Data Models | commonMain | [x] 100% |
-| Mesh Logic | commonMain | [x] 100% |
-| AI Engine | commonMain | [x] 100% |
-| Localization | commonMain | [x] 100% |
-| UI/Compose | commonMain | [x] 100% |
-| Transport (Nearby) | androidMain | Android-only* |
-| Persistence | androidMain | Android-only* |
+| Data Models | commonMain | 100% |
+| Mesh Logic | commonMain | 100% |
+| AI Engine | commonMain | 100% |
+| Localization | commonMain | 100% |
+| UI/Compose | commonMain | 100% |
+| Transport | platform/ | expect/actual |
+| Persistence | platform/ | expect/actual |
 
-*These use `expect/actual` pattern for future iOS support
+**Android Transport**: Google Nearby Connections API  
+**iOS Transport**: MultipeerConnectivity Framework
 
 ---
 
 ##  Quick Start
 
 ### Requirements
+
+**For Android:**
 - Android Studio Hedgehog (2023.1.1) or newer
 - JDK 11+
 - Android device with API 26+ (Android 8.0)
 - Bluetooth and WiFi enabled
 
+**For iOS:**
+- macOS with Xcode 15+
+- iOS 14.0+ device or simulator
+- Apple Developer account (for device testing)
+
 ### Build Instructions
+
+#### Android
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/rescuemesh.git
-cd rescuemesh
+git clone https://github.com/pazussa/rescueMesh.git
+cd rescueMesh
 
 # Build debug APK
-./gradlew assembleDebug
+./gradlew :composeApp:assembleDebug
 
 # APK location:
 # composeApp/build/outputs/apk/debug/composeApp-debug.apk
 ```
 
+#### iOS
+
+```bash
+# First, build the Kotlin framework
+./gradlew :composeApp:linkDebugFrameworkIosSimulatorArm64
+# or for physical devices:
+./gradlew :composeApp:linkDebugFrameworkIosArm64
+
+# Then open in Xcode
+open iosApp/iosApp.xcodeproj
+
+# Build and run from Xcode
+```
+
 ### Install on Device
 
+**Android:**
 ```bash
 # Via ADB
 adb install composeApp/build/outputs/apk/debug/composeApp-debug.apk
 
 # Or transfer APK manually and install
 ```
+
+**iOS:**
+1. Open `iosApp/iosApp.xcodeproj` in Xcode
+2. Select your target device
+3. Click "Run" or press Cmd+R
+4. For distribution, use Xcode's Archive feature
 
 ---
 
@@ -229,7 +274,7 @@ fun calculateUrgencyScore(message: MeshMessage): Int {
 
 ##  Roadmap
 
-- [ ] iOS support via KMP
+- [x] iOS support via KMP (MultipeerConnectivity)
 - [ ] Desktop support (JVM)
 - [ ] GPS coordinates in messages
 - [ ] Photo attachments (compressed)
