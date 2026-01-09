@@ -54,7 +54,7 @@ fun CreateRoomScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "🚨",
+                text = "",
                 fontSize = 48.sp
             )
             
@@ -118,7 +118,7 @@ fun CreateRoomScreen(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = if (isEnglish) "📱 When creating the room:" else "📱 Al crear la sala:",
+                        text = if (isEnglish) " When creating the room:" else " Al crear la sala:",
                         fontWeight = FontWeight.Bold,
                         color = RescueMeshColors.OnSurface,
                         fontSize = 14.sp

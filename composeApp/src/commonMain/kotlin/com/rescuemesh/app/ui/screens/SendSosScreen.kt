@@ -116,7 +116,7 @@ fun SendSosScreen(
                 enabled = selectedCategory != null
             ) {
                 Text(
-                    text = "🆘 ENVIAR SOS",
+                    text = " ENVIAR SOS",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -132,13 +132,13 @@ private fun SosCategoryCard(
     onClick: () -> Unit
 ) {
     val (emoji, label) = when (category) {
-        SosCategory.MEDICAL -> "🏥" to "Médico"
-        SosCategory.FIRE -> "🔥" to "Fuego"
-        SosCategory.TRAPPED -> "🚪" to "Atrapado"
-        SosCategory.CHILDREN -> "👶" to "Niños"
-        SosCategory.ELDERLY -> "👴" to "Adulto mayor"
-        SosCategory.INJURED -> "🩹" to "Herido"
-        SosCategory.OTHER -> "❓" to "Otro"
+        SosCategory.MEDICAL -> "Medical:" to "Médico"
+        SosCategory.FIRE -> "Fire:" to "Fuego"
+        SosCategory.TRAPPED -> "Trapped:" to "Atrapado"
+        SosCategory.CHILDREN -> "Children:" to "Niños"
+        SosCategory.ELDERLY -> "Elderly:" to "Adulto mayor"
+        SosCategory.INJURED -> "Injured:" to "Herido"
+        SosCategory.OTHER -> "Other:" to "Otro"
     }
     
     Card(

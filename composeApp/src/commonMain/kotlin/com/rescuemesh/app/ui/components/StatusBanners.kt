@@ -61,7 +61,7 @@ fun BluetoothWarningBanner(
                 )
                 
                 Text(
-                    text = "📵",
+                    text = "",
                     fontSize = 24.sp,
                     modifier = Modifier.scale(alpha)
                 )
@@ -155,9 +155,9 @@ fun NetworkStatusBanner(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = when {
-                        connectedPeers > 0 -> "📡 Red Mesh Activa"
-                        isActive -> "📡 Buscando dispositivos..."
-                        else -> "⚠️ Red no disponible"
+                        connectedPeers > 0 -> "Signal: Red Mesh Activa"
+                        isActive -> "Signal: Buscando dispositivos..."
+                        else -> "WARNING: Red no disponible"
                     },
                     fontWeight = FontWeight.Bold,
                     color = statusColor,
@@ -204,7 +204,7 @@ fun AISummaryButton(
             modifier = Modifier.padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "🤖", fontSize = 20.sp)
+            Text(text = "AI:", fontSize = 20.sp)
             Spacer(modifier = Modifier.width(8.dp))
             Column {
                 Text(

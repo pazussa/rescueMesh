@@ -55,7 +55,7 @@ fun WelcomeScreen(
         
         // Logo/Title
         Text(
-            text = "🆘",
+            text = "",
             fontSize = 72.sp
         )
         

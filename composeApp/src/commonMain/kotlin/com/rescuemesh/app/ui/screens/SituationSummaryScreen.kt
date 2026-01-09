@@ -46,7 +46,7 @@ fun SituationSummaryScreen(
                     Column {
                         Text("Resumen de Situación")
                         Text(
-                            text = "📊 Actualizado automáticamente",
+                            text = " Actualizado automáticamente",
                             fontSize = 12.sp,
                             color = RescueMeshColors.OnSurface.copy(alpha = 0.7f)
                         )
@@ -98,7 +98,7 @@ fun SituationSummaryScreen(
             if (summary.priorityMessages.isNotEmpty()) {
                 item {
                     Text(
-                        text = "🔔 Mensajes Prioritarios (${summary.priorityMessages.size})",
+                        text = " Mensajes Prioritarios (${summary.priorityMessages.size})",
                         fontWeight = FontWeight.Bold,
                         color = RescueMeshColors.OnBackground,
                         fontSize = 16.sp
@@ -114,7 +114,7 @@ fun SituationSummaryScreen(
             if (summary.dangerZones.isNotEmpty()) {
                 item {
                     Text(
-                        text = "⚠️ Zonas de Peligro (${summary.dangerZones.size})",
+                        text = "WARNING: Zonas de Peligro (${summary.dangerZones.size})",
                         fontWeight = FontWeight.Bold,
                         color = RescueMeshColors.OnBackground,
                         fontSize = 16.sp
@@ -130,7 +130,7 @@ fun SituationSummaryScreen(
             if (summary.resourceNeeds.isNotEmpty()) {
                 item {
                     Text(
-                        text = "📦 Recursos Necesarios",
+                        text = "Package: Recursos Necesarios",
                         fontWeight = FontWeight.Bold,
                         color = RescueMeshColors.OnBackground,
                         fontSize = 16.sp
@@ -171,9 +171,9 @@ private fun SummaryCard(summary: SituationSummary) {
             ) {
                 Text(
                     text = when {
-                        summary.criticalCount > 0 -> "🚨"
-                        summary.activeSOSCount > 0 -> "⚠️"
-                        else -> "✅"
+                        summary.criticalCount > 0 -> ""
+                        summary.activeSOSCount > 0 -> "WARNING:"
+                        else -> "OK:"
                     },
                     fontSize = 32.sp
                 )
@@ -210,28 +210,28 @@ private fun QuickStatsRow(summary: SituationSummary) {
     ) {
         StatBox(
             modifier = Modifier.weight(1f),
-            emoji = "🆘",
+            emoji = "",
             value = summary.activeSOSCount.toString(),
             label = "SOS",
             color = RescueMeshColors.Danger
         )
         StatBox(
             modifier = Modifier.weight(1f),
-            emoji = "👥",
+            emoji = "",
             value = summary.totalPeopleAffected.toString(),
             label = "Personas",
             color = RescueMeshColors.Warning
         )
         StatBox(
             modifier = Modifier.weight(1f),
-            emoji = "✅",
+            emoji = "OK:",
             value = summary.safeCount.toString(),
             label = "A Salvo",
             color = RescueMeshColors.Success
         )
         StatBox(
             modifier = Modifier.weight(1f),
-            emoji = "📨",
+            emoji = "",
             value = summary.totalMessages.toString(),
             label = "Mensajes",
             color = RescueMeshColors.Info
@@ -291,7 +291,7 @@ private fun CriticalAlertCard(count: Int) {
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "🚨", fontSize = 32.sp)
+            Text(text = "", fontSize = 32.sp)
             Spacer(modifier = Modifier.width(12.dp))
             Column {
                 Text(
@@ -313,14 +313,14 @@ private fun CriticalAlertCard(count: Int) {
 @Composable
 private fun DangerZoneCard(danger: DangerZoneInfo) {
     val emoji = when (danger.type) {
-        DangerType.FIRE -> "🔥"
-        DangerType.COLLAPSE -> "🏚️"
-        DangerType.FLOOD -> "🌊"
-        DangerType.GAS_LEAK -> "☢️"
-        DangerType.ELECTRICAL -> "⚡"
-        DangerType.BLOCKED_ROAD -> "🚧"
-        DangerType.UNSAFE_BUILDING -> "🏗️"
-        DangerType.OTHER -> "⚠️"
+        DangerType.FIRE -> "Fire:"
+        DangerType.COLLAPSE -> "Collapse:"
+        DangerType.FLOOD -> "Flood:"
+        DangerType.GAS_LEAK -> ""
+        DangerType.ELECTRICAL -> "Electrical:"
+        DangerType.BLOCKED_ROAD -> "Blocked:"
+        DangerType.UNSAFE_BUILDING -> ""
+        DangerType.OTHER -> "WARNING:"
     }
     
     val severityColor = when (danger.severity) {
@@ -376,7 +376,7 @@ private fun DangerZoneCard(danger: DangerZoneInfo) {
                 if (danger.isBlocking) {
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "🚫 Bloquea paso",
+                        text = " Bloquea paso",
                         fontSize = 11.sp,
                         color = RescueMeshColors.Danger
                     )
@@ -389,16 +389,16 @@ private fun DangerZoneCard(danger: DangerZoneInfo) {
 @Composable
 private fun ResourceNeedCard(need: ResourceNeedInfo) {
     val emoji = when (need.type) {
-        ResourceType.WATER -> "💧"
-        ResourceType.FOOD -> "🍞"
-        ResourceType.MEDICINE -> "💊"
-        ResourceType.FIRST_AID -> "🩹"
-        ResourceType.BLANKETS -> "🛏️"
-        ResourceType.TRANSPORT -> "🚗"
-        ResourceType.SHELTER -> "🏠"
-        ResourceType.FLASHLIGHT -> "🔦"
-        ResourceType.BATTERY -> "🔋"
-        ResourceType.OTHER -> "📦"
+        ResourceType.WATER -> "Water:"
+        ResourceType.FOOD -> "Food:"
+        ResourceType.MEDICINE -> "Medicine:"
+        ResourceType.FIRST_AID -> "Injured:"
+        ResourceType.BLANKETS -> "Blankets:"
+        ResourceType.TRANSPORT -> "Transport:"
+        ResourceType.SHELTER -> "Shelter:"
+        ResourceType.FLASHLIGHT -> "Flashlight:"
+        ResourceType.BATTERY -> "Battery:"
+        ResourceType.OTHER -> "Package:"
     }
     
     Card(
@@ -427,7 +427,7 @@ private fun ResourceNeedCard(need: ResourceNeedInfo) {
                 )
                 if (need.urgent) {
                     Text(
-                        text = "⚡ URGENTE",
+                        text = "Electrical: URGENTE",
                         color = RescueMeshColors.Warning,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold
@@ -472,7 +472,7 @@ private fun SummaryInfoCard() {
             )
             Spacer(modifier = Modifier.height(8.dp))
             Row {
-                Text(text = "✓ ", color = RescueMeshColors.Success, fontSize = 12.sp)
+                Text(text = "OK ", color = RescueMeshColors.Success, fontSize = 12.sp)
                 Text(
                     text = "100% offline • Análisis local • Actualización automática",
                     fontSize = 12.sp,

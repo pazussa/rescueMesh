@@ -55,7 +55,7 @@ fun JoinRoomScreen(
         ) {
             // Icon and title
             Text(
-                text = "🔗",
+                text = "",
                 fontSize = 64.sp
             )
             

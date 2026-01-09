@@ -132,7 +132,7 @@ fun NetworkStatusScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "📡",
+                                text = "Signal:",
                                 fontSize = 48.sp
                             )
                             Spacer(modifier = Modifier.height(8.dp))
@@ -210,7 +210,7 @@ private fun NetworkStatusHeader(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = if (isActive) "📡" else "⏳",
+                    text = if (isActive) "Signal:" else "⏳",
                     fontSize = 28.sp
                 )
             }
@@ -290,7 +290,7 @@ private fun NearbyConnectionsStatusCard(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "🔗 Google Nearby Connections API",
+                text = " Google Nearby Connections API",
                 fontWeight = FontWeight.Bold,
                 color = RescueMeshColors.OnSurface,
                 fontSize = 14.sp
@@ -411,7 +411,7 @@ private fun MeshStatsCard(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "📊 Estadísticas del Mesh",
+                text = " Estadísticas del Mesh",
                 fontWeight = FontWeight.Bold,
                 color = RescueMeshColors.OnSurface,
                 fontSize = 14.sp
@@ -510,7 +510,7 @@ private fun PeerCard(
                 horizontalAlignment = Alignment.End
             ) {
                 Text(
-                    text = "✓ Conectado",
+                    text = "OK Conectado",
                     color = RescueMeshColors.Success,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium
@@ -547,12 +547,12 @@ private fun TechnicalInfoCard() {
             Spacer(modifier = Modifier.height(12.dp))
             
             val technicalInfo = listOf(
-                "📶 Usa WiFi Direct, Bluetooth y BLE automáticamente",
-                "🔐 Conexiones encriptadas end-to-end",
-                "📡 Alcance: ~100m por salto (sin obstáculos)",
-                "🔄 Multi-hop: mensajes se reenvían automáticamente",
-                "💾 Store-and-forward: mensajes persisten localmente",
-                "🎯 Estrategia: P2P_CLUSTER (múltiples conexiones)"
+                " Usa WiFi Direct, Bluetooth y BLE automáticamente",
+                " Conexiones encriptadas end-to-end",
+                "Signal: Alcance: ~100m por salto (sin obstáculos)",
+                " Multi-hop: mensajes se reenvían automáticamente",
+                " Store-and-forward: mensajes persisten localmente",
+                " Estrategia: P2P_CLUSTER (múltiples conexiones)"
             )
             
             technicalInfo.forEach { info ->

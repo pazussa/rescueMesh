@@ -183,11 +183,11 @@ class OfflineAIEngine {
         // Generar texto de resumen
         val summaryText = buildString {
             if (criticalMessages.isNotEmpty()) {
-                append("⚠️ ${criticalMessages.size} EMERGENCIAS CRÍTICAS. ")
+                append("WARNING: ${criticalMessages.size} EMERGENCIAS CRÍTICAS. ")
             }
             
             if (sosList.isNotEmpty()) {
-                append("🆘 ${sosList.size} SOS activos")
+                append(" ${sosList.size} SOS activos")
                 if (peopleAffected > sosList.size) {
                     append(" (~$peopleAffected personas)")
                 }
@@ -196,7 +196,7 @@ class OfflineAIEngine {
             
             if (dangerZones.isNotEmpty()) {
                 val blocking = dangerZones.count { it.isBlocking }
-                append("⚠️ ${dangerZones.size} peligros reportados")
+                append("WARNING: ${dangerZones.size} peligros reportados")
                 if (blocking > 0) {
                     append(" ($blocking bloquean paso)")
                 }
@@ -206,12 +206,12 @@ class OfflineAIEngine {
             if (resourceNeeds.isNotEmpty()) {
                 val urgentNeeds = resourceNeeds.filter { it.urgent }
                 if (urgentNeeds.isNotEmpty()) {
-                    append("📦 ${urgentNeeds.size} recursos urgentes. ")
+                    append("Package: ${urgentNeeds.size} recursos urgentes. ")
                 }
             }
             
             if (safeList.isNotEmpty()) {
-                append("✅ ${safeList.size} confirmados a salvo.")
+                append("OK: ${safeList.size} confirmados a salvo.")
             }
             
             if (isEmpty()) {
@@ -255,49 +255,49 @@ class OfflineAIEngine {
         return when (val content = message.content) {
             is MessageContent.Sos -> {
                 val category = when (content.category) {
-                    SosCategory.MEDICAL -> "🏥 Médico"
-                    SosCategory.FIRE -> "🔥 Fuego"
-                    SosCategory.TRAPPED -> "🚪 Atrapado"
-                    SosCategory.CHILDREN -> "👶 Niños"
-                    SosCategory.ELDERLY -> "👴 Adulto mayor"
-                    SosCategory.INJURED -> "🩹 Herido"
-                    SosCategory.OTHER -> "❓ Otro"
+                    SosCategory.MEDICAL -> "Medical: Médico"
+                    SosCategory.FIRE -> "Fire: Fuego"
+                    SosCategory.TRAPPED -> "Trapped: Atrapado"
+                    SosCategory.CHILDREN -> "Children: Niños"
+                    SosCategory.ELDERLY -> "Elderly: Adulto mayor"
+                    SosCategory.INJURED -> "Injured: Herido"
+                    SosCategory.OTHER -> "Other: Otro"
                 }
                 val people = if (content.peopleCount > 1) " (${content.peopleCount} personas)" else ""
-                "🆘 SOS $category$people"
+                " SOS $category$people"
             }
             is MessageContent.DangerReport -> {
                 val type = when (content.dangerType) {
-                    DangerType.FIRE -> "🔥 Fuego"
-                    DangerType.COLLAPSE -> "🏚️ Derrumbe"
-                    DangerType.FLOOD -> "🌊 Inundación"
-                    DangerType.GAS_LEAK -> "💨 Fuga de gas"
-                    DangerType.BLOCKED_ROAD -> "🚧 Camino bloqueado"
-                    DangerType.UNSAFE_BUILDING -> "🏗️ Edificio inseguro"
-                    DangerType.ELECTRICAL -> "⚡ Eléctrico"
-                    DangerType.OTHER -> "⚠️ Peligro"
+                    DangerType.FIRE -> "Fire: Fuego"
+                    DangerType.COLLAPSE -> "Collapse: Derrumbe"
+                    DangerType.FLOOD -> "Flood: Inundación"
+                    DangerType.GAS_LEAK -> "Gas: Fuga de gas"
+                    DangerType.BLOCKED_ROAD -> "Blocked: Camino bloqueado"
+                    DangerType.UNSAFE_BUILDING -> " Edificio inseguro"
+                    DangerType.ELECTRICAL -> "Electrical: Eléctrico"
+                    DangerType.OTHER -> "WARNING: Peligro"
                 }
                 val blocking = if (content.isBlocking) " - BLOQUEA PASO" else ""
-                "⚠️ $type$blocking"
+                "WARNING: $type$blocking"
             }
             is MessageContent.ResourceRequest -> {
                 val type = when (content.resourceType) {
-                    ResourceType.WATER -> "💧 Agua"
-                    ResourceType.FOOD -> "🍞 Comida"
-                    ResourceType.FIRST_AID -> "🩹 Botiquín"
-                    ResourceType.TRANSPORT -> "🚗 Transporte"
-                    ResourceType.SHELTER -> "🏠 Refugio"
-                    ResourceType.BLANKETS -> "🛏️ Mantas"
-                    ResourceType.FLASHLIGHT -> "🔦 Linterna"
-                    ResourceType.BATTERY -> "🔋 Baterías"
-                    ResourceType.MEDICINE -> "💊 Medicinas"
-                    ResourceType.OTHER -> "📦 Otro"
+                    ResourceType.WATER -> "Water: Agua"
+                    ResourceType.FOOD -> "Food: Comida"
+                    ResourceType.FIRST_AID -> "Injured: Botiquín"
+                    ResourceType.TRANSPORT -> "Transport: Transporte"
+                    ResourceType.SHELTER -> "Shelter: Refugio"
+                    ResourceType.BLANKETS -> "Blankets: Mantas"
+                    ResourceType.FLASHLIGHT -> "Flashlight: Linterna"
+                    ResourceType.BATTERY -> "Battery: Baterías"
+                    ResourceType.MEDICINE -> "Medicine: Medicinas"
+                    ResourceType.OTHER -> "Package: Otro"
                 }
-                val urgent = if (content.urgent) " ⚡URGENTE" else ""
-                "📦 Necesita $type x${content.quantity}$urgent"
+                val urgent = if (content.urgent) " Electrical:URGENTE" else ""
+                "Package: Necesita $type x${content.quantity}$urgent"
             }
-            is MessageContent.Chat -> "💬 ${content.text.take(50)}..."
-            is MessageContent.ImOk -> "✅ Está bien"
+            is MessageContent.Chat -> "Chat: ${content.text.take(50)}..."
+            is MessageContent.ImOk -> "OK: Está bien"
         }
     }
     

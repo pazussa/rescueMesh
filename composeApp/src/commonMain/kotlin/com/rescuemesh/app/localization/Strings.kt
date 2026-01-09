@@ -460,7 +460,7 @@ object EnglishStrings : Strings {
     override val share = "Share"
     override val meshActive = "Mesh active"
     override val shareAppButton = "Share App with Others"
-    override val joinInstructionsTitle = "📱 For others to join:"
+    override val joinInstructionsTitle = " For others to join:"
     override val joinInstructionsBody = "1. Share the code and PIN\n2. Or show QR code\n3. Make sure to be nearby (~100m)"
     
     // Share App Screen
@@ -656,7 +656,7 @@ object SpanishStrings : Strings {
     override val share = "Compartir"
     override val meshActive = "Mesh activo"
     override val shareAppButton = "Compartir App con Otros"
-    override val joinInstructionsTitle = "📱 Para que otros se unan:"
+    override val joinInstructionsTitle = " Para que otros se unan:"
     override val joinInstructionsBody = "1. Comparte el código y PIN\n2. O muestra el código QR\n3. Asegúrate de estar cerca (~100m)"
     
     // Share App Screen

@@ -83,7 +83,7 @@ object AppSharing {
             putExtra(
                 Intent.EXTRA_TEXT,
                 """
-                🆘 RescueMesh - Offline Emergency Network
+                 RescueMesh - Offline Emergency Network
                 
                 Install this app to join the emergency mesh network.
                 No internet required - works via Bluetooth/WiFi.
@@ -93,7 +93,7 @@ object AppSharing {
                 2. Grant permissions when asked
                 3. Create or join an Incident Room
                 
-                Stay safe! 🙏
+                Stay safe! 
                 """.trimIndent()
             )
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)

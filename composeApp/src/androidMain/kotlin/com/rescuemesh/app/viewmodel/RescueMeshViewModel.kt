@@ -236,7 +236,7 @@ class RescueMeshViewModel(
      */
     fun startAutoApkBroadcast(roomCode: String = "") {
         AutoApkBroadcaster.startAutoBroadcast(context, roomCode)
-        _statusMessage.value = "📡 Enviando APK de emergencia por Bluetooth..."
+        _statusMessage.value = "Signal: Enviando APK de emergencia por Bluetooth..."
     }
     
     /**

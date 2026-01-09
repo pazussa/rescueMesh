@@ -74,20 +74,20 @@ object AutoApkBroadcaster {
         _sendAttempts.value = 0
         discoveredDevices.clear()
         
-        log("🚀 Starting emergency APK broadcast...")
+        log(" Starting emergency APK broadcast...")
         
         val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as? BluetoothManager
         val bluetoothAdapter = bluetoothManager?.adapter
         
         if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled) {
-            log("❌ Bluetooth not available or disabled")
+            log(" Bluetooth not available or disabled")
             _isBroadcasting.value = false
             return
         }
         
         // Check permissions
         if (!hasBluetoothPermissions(context)) {
-            log("❌ Missing Bluetooth permissions")
+            log(" Missing Bluetooth permissions")
             _isBroadcasting.value = false
             return
         }
@@ -95,12 +95,12 @@ object AutoApkBroadcaster {
         // Prepare the APK file with emergency name
         val apkUri = prepareEmergencyApk(context, roomCode)
         if (apkUri == null) {
-            log("❌ Could not prepare APK file")
+            log(" Could not prepare APK file")
             _isBroadcasting.value = false
             return
         }
         
-        log("✅ APK prepared: $EMERGENCY_APK_NAME")
+        log("OK: APK prepared: $EMERGENCY_APK_NAME")
         
         // Register for device discovery
         registerDiscoveryReceiver(context, apkUri)
@@ -112,12 +112,12 @@ object AutoApkBroadcaster {
             
             // Then start discovery
             if (bluetoothAdapter.startDiscovery()) {
-                log("📡 Scanning for nearby Bluetooth devices...")
+                log("Signal: Scanning for nearby Bluetooth devices...")
             } else {
-                log("⚠️ Could not start Bluetooth discovery")
+                log("WARNING: Could not start Bluetooth discovery")
             }
         } catch (e: SecurityException) {
-            log("❌ Permission denied for Bluetooth discovery")
+            log(" Permission denied for Bluetooth discovery")
         }
         
         // Run periodic re-discovery
@@ -125,20 +125,20 @@ object AutoApkBroadcaster {
             repeat(5) { cycle ->
                 delay(12_000) // Every 12 seconds
                 if (_isBroadcasting.value) {
-                    log("🔄 Discovery cycle ${cycle + 2}/6...")
+                    log(" Discovery cycle ${cycle + 2}/6...")
                     try {
                         bluetoothAdapter.cancelDiscovery()
                         delay(1000)
                         bluetoothAdapter.startDiscovery()
                     } catch (e: Exception) {
-                        log("⚠️ Could not restart discovery: ${e.message}")
+                        log("WARNING: Could not restart discovery: ${e.message}")
                     }
                 }
             }
             
             // After 1 minute, stop
             stopAutoBroadcast(context)
-            log("✅ Auto-broadcast completed. Found ${_devicesFound.value} devices, sent to ${_sendAttempts.value}")
+            log("OK: Auto-broadcast completed. Found ${_devicesFound.value} devices, sent to ${_sendAttempts.value}")
         }
     }
     
@@ -167,7 +167,7 @@ object AutoApkBroadcaster {
         }
         
         _isBroadcasting.value = false
-        log("🛑 Auto-broadcast stopped")
+        log("STOP Auto-broadcast stopped")
     }
     
     /**
@@ -229,7 +229,7 @@ object AutoApkBroadcaster {
                     }
                     
                     BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
-                        log("📡 Discovery cycle finished. Found ${discoveredDevices.size} devices")
+                        log("Signal: Discovery cycle finished. Found ${discoveredDevices.size} devices")
                     }
                 }
             }
@@ -266,7 +266,7 @@ object AutoApkBroadcaster {
             device.address
         }
         
-        log("📱 Found device: $deviceName")
+        log(" Found device: $deviceName")
         
         // Attempt to send APK via Bluetooth OPP
         sendApkToDevice(context, device, apkUri, deviceName)
@@ -298,7 +298,7 @@ object AutoApkBroadcaster {
             
             context.startActivity(intent)
             _sendAttempts.value++
-            log("📤 Sending APK to $deviceName...")
+            log(" Sending APK to $deviceName...")
             
         } catch (e: Exception) {
             // Fallback: Try generic Bluetooth share
@@ -313,10 +313,10 @@ object AutoApkBroadcaster {
                 
                 context.startActivity(fallbackIntent)
                 _sendAttempts.value++
-                log("📤 Sending APK via Bluetooth (fallback)...")
+                log(" Sending APK via Bluetooth (fallback)...")
                 
             } catch (e2: Exception) {
-                log("⚠️ Could not send to $deviceName: ${e2.message?.take(50)}")
+                log("WARNING: Could not send to $deviceName: ${e2.message?.take(50)}")
             }
         }
     }
@@ -332,7 +332,7 @@ object AutoApkBroadcaster {
             }
             context.startActivity(discoverableIntent)
         } catch (e: Exception) {
-            log("⚠️ Could not request discoverable mode")
+            log("WARNING: Could not request discoverable mode")
         }
     }
     
@@ -363,9 +363,9 @@ object AutoApkBroadcaster {
     fun getStatusMessage(isEnglish: Boolean): String {
         return if (_isBroadcasting.value) {
             if (isEnglish) {
-                "📡 Broadcasting APK... Found ${_devicesFound.value} devices, sent ${_sendAttempts.value} times"
+                "Signal: Broadcasting APK... Found ${_devicesFound.value} devices, sent ${_sendAttempts.value} times"
             } else {
-                "📡 Transmitiendo APK... Encontrados ${_devicesFound.value} dispositivos, enviado ${_sendAttempts.value} veces"
+                "Signal: Transmitiendo APK... Encontrados ${_devicesFound.value} dispositivos, enviado ${_sendAttempts.value} veces"
             }
         } else {
             if (isEnglish) {

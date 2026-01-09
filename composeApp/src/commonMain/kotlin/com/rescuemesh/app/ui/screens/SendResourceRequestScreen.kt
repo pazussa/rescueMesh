@@ -150,7 +150,7 @@ fun SendResourceRequestScreen(
                 enabled = selectedResource != null
             ) {
                 Text(
-                    text = "📦 Enviar Solicitud",
+                    text = "Package: Enviar Solicitud",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -166,16 +166,16 @@ private fun ResourceCard(
     onClick: () -> Unit
 ) {
     val (emoji, label) = when (resource) {
-        ResourceType.WATER -> "💧" to "Agua"
-        ResourceType.FOOD -> "🍞" to "Comida"
-        ResourceType.FIRST_AID -> "🩹" to "Botiquín"
-        ResourceType.TRANSPORT -> "🚗" to "Transporte"
-        ResourceType.SHELTER -> "🏠" to "Refugio"
-        ResourceType.BLANKETS -> "🛏️" to "Mantas"
-        ResourceType.FLASHLIGHT -> "🔦" to "Linterna"
-        ResourceType.BATTERY -> "🔋" to "Baterías"
-        ResourceType.MEDICINE -> "💊" to "Medicinas"
-        ResourceType.OTHER -> "📦" to "Otro"
+        ResourceType.WATER -> "Water:" to "Agua"
+        ResourceType.FOOD -> "Food:" to "Comida"
+        ResourceType.FIRST_AID -> "Injured:" to "Botiquín"
+        ResourceType.TRANSPORT -> "Transport:" to "Transporte"
+        ResourceType.SHELTER -> "Shelter:" to "Refugio"
+        ResourceType.BLANKETS -> "Blankets:" to "Mantas"
+        ResourceType.FLASHLIGHT -> "Flashlight:" to "Linterna"
+        ResourceType.BATTERY -> "Battery:" to "Baterías"
+        ResourceType.MEDICINE -> "Medicine:" to "Medicinas"
+        ResourceType.OTHER -> "Package:" to "Otro"
     }
     
     Card(

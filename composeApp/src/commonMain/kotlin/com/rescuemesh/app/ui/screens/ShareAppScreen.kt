@@ -67,7 +67,7 @@ fun ShareAppScreen(
         topBar = {
             TopAppBar(
                 title = { 
-                    Text(if (isEnglish) "📲 Share App to Save Lives" else "📲 Comparte la App para Salvar Vidas")
+                    Text(if (isEnglish) " Share App to Save Lives" else " Comparte la App para Salvar Vidas")
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -106,7 +106,7 @@ fun ShareAppScreen(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "⚠️ ${if (isEnglish) "IMPORTANT LIMITATION" else "LIMITACIÓN IMPORTANTE"}",
+                        text = "WARNING: ${if (isEnglish) "IMPORTANT LIMITATION" else "LIMITACIÓN IMPORTANTE"}",
                         fontWeight = FontWeight.Bold,
                         color = Color.Black,
                         fontSize = 16.sp
@@ -152,7 +152,7 @@ fun ShareAppScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = if (isEmergencyBroadcastActive) "📡 BROADCASTING..." else "📡 HACK: EMERGENCY SIGNAL",
+                        text = if (isEmergencyBroadcastActive) "Signal: BROADCASTING..." else "Signal: HACK: EMERGENCY SIGNAL",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -163,12 +163,12 @@ fun ShareAppScreen(
                     Text(
                         text = if (isEnglish)
                             if (isEmergencyBroadcastActive)
-                                "Your device is now visible as '🆘SOS-RESCUEMESH' to EVERYONE scanning Bluetooth!"
+                                "Your device is now visible as 'SOS-RESCUEMESH' to EVERYONE scanning Bluetooth!"
                             else
                                 "Make your device name visible to ALL nearby phones (no app needed!)"
                         else
                             if (isEmergencyBroadcastActive)
-                                "¡Tu dispositivo ahora es visible como '🆘SOS-RESCUEMESH' para TODOS los que busquen Bluetooth!"
+                                "¡Tu dispositivo ahora es visible como 'SOS-RESCUEMESH' para TODOS los que busquen Bluetooth!"
                             else
                                 "Haz visible el nombre de tu dispositivo a TODOS los teléfonos cercanos (¡sin app necesaria!)",
                         color = Color.White.copy(alpha = 0.9f),
@@ -199,9 +199,9 @@ fun ShareAppScreen(
                     ) {
                         Text(
                             text = if (isEmergencyBroadcastActive) 
-                                (if (isEnglish) "🛑 STOP BROADCAST" else "🛑 DETENER TRANSMISIÓN")
+                                (if (isEnglish) "STOP STOP BROADCAST" else "STOP DETENER TRANSMISIÓN")
                             else 
-                                (if (isEnglish) "📢 START EMERGENCY BROADCAST" else "📢 INICIAR TRANSMISIÓN DE EMERGENCIA"),
+                                (if (isEnglish) "Broadcast: START EMERGENCY BROADCAST" else "Broadcast: INICIAR TRANSMISIÓN DE EMERGENCIA"),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = if (isEmergencyBroadcastActive) Color.White else RescueMeshColors.Emergency
@@ -228,9 +228,9 @@ fun ShareAppScreen(
                         ) {
                             Text(
                                 text = if (isEnglish)
-                                    "📱 Tell people: \"Look for 'SOS-RESCUEMESH' in your Bluetooth devices!\""
+                                    " Tell people: \"Look for 'SOS-RESCUEMESH' in your Bluetooth devices!\""
                                 else
-                                    "📱 Dile a la gente: \"¡Busca 'SOS-RESCUEMESH' en tus dispositivos Bluetooth!\"",
+                                    " Dile a la gente: \"¡Busca 'SOS-RESCUEMESH' en tus dispositivos Bluetooth!\"",
                                 color = Color.White,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Medium,
@@ -259,7 +259,7 @@ fun ShareAppScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "📱",
+                        text = "",
                         fontSize = 48.sp
                     )
                     Spacer(modifier = Modifier.width(16.dp))
@@ -288,7 +288,7 @@ fun ShareAppScreen(
             
             // Share Buttons
             Text(
-                text = if (isEnglish) "🚨 SHARE NOW TO NEARBY DEVICES" else "🚨 COMPARTE AHORA A DISPOSITIVOS CERCANOS",
+                text = if (isEnglish) " SHARE NOW TO NEARBY DEVICES" else " COMPARTE AHORA A DISPOSITIVOS CERCANOS",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = RescueMeshColors.Emergency,
@@ -309,7 +309,7 @@ fun ShareAppScreen(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    text = "📡 ${if (isEnglish) "Share via Bluetooth" else "Compartir por Bluetooth"}",
+                    text = "Signal: ${if (isEnglish) "Share via Bluetooth" else "Compartir por Bluetooth"}",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -329,7 +329,7 @@ fun ShareAppScreen(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    text = "📤 ${if (isEnglish) "Nearby Share / Quick Share" else "Nearby Share / Quick Share"}",
+                    text = " ${if (isEnglish) "Nearby Share / Quick Share" else "Nearby Share / Quick Share"}",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -349,7 +349,7 @@ fun ShareAppScreen(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Text(
-                        text = "📋 ${if (isEnglish) "HOW TO SHARE:" else "CÓMO COMPARTIR:"}",
+                        text = " ${if (isEnglish) "HOW TO SHARE:" else "CÓMO COMPARTIR:"}",
                         fontWeight = FontWeight.Bold,
                         color = RescueMeshColors.Info,
                         fontSize = 15.sp
@@ -396,9 +396,9 @@ fun ShareAppScreen(
                 ) {
                     Text(
                         text = if (isEnglish) 
-                            "📱 TELL THE RECIPIENT:" 
+                            " TELL THE RECIPIENT:" 
                         else 
-                            "📱 DILE AL RECEPTOR:",
+                            " DILE AL RECEPTOR:",
                         fontWeight = FontWeight.Bold,
                         color = RescueMeshColors.OnSurface,
                         fontSize = 15.sp
@@ -407,21 +407,21 @@ fun ShareAppScreen(
                     Text(
                         text = if (isEnglish)
                             """
-                            ✅ Accept the file transfer
-                            ✅ Tap the downloaded APK file
-                            ✅ Allow "Install from unknown sources"
-                            ✅ Open RescueMesh after install
-                            ✅ Tap "Join Incident Room"
-                            ✅ Enter the room code I give you
+                            OK: Accept the file transfer
+                            OK: Tap the downloaded APK file
+                            OK: Allow "Install from unknown sources"
+                            OK: Open RescueMesh after install
+                            OK: Tap "Join Incident Room"
+                            OK: Enter the room code I give you
                             """.trimIndent()
                         else
                             """
-                            ✅ Acepta la transferencia del archivo
-                            ✅ Toca el archivo APK descargado
-                            ✅ Permite "Instalar de fuentes desconocidas"
-                            ✅ Abre RescueMesh después de instalar
-                            ✅ Toca "Unirse a Sala de Incidente"
-                            ✅ Ingresa el código de sala que te doy
+                            OK: Acepta la transferencia del archivo
+                            OK: Toca el archivo APK descargado
+                            OK: Permite "Instalar de fuentes desconocidas"
+                            OK: Abre RescueMesh después de instalar
+                            OK: Toca "Unirse a Sala de Incidente"
+                            OK: Ingresa el código de sala que te doy
                             """.trimIndent(),
                         color = RescueMeshColors.OnSurface.copy(alpha = 0.9f),
                         fontSize = 13.sp,
@@ -435,9 +435,9 @@ fun ShareAppScreen(
             // Reminder text
             Text(
                 text = if (isEnglish) 
-                    "💪 Every phone you share with can help save more lives!" 
+                    " Every phone you share with can help save more lives!" 
                 else 
-                    "💪 ¡Cada teléfono con el que compartas puede ayudar a salvar más vidas!",
+                    " ¡Cada teléfono con el que compartas puede ayudar a salvar más vidas!",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
                 color = RescueMeshColors.Success,

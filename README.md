@@ -1,4 +1,4 @@
-# RescueMesh 🆘
+# RescueMesh 
 
 **Offline Emergency Communication Network using Mesh Networking**
 
@@ -10,7 +10,7 @@
 
 ---
 
-## 📱 About
+##  About
 
 RescueMesh is designed for disaster scenarios where traditional communication infrastructure fails. It creates a local mesh network between phones allowing critical messages (SOS, "I'm OK", resource requests, danger reports) to propagate even when devices aren't in direct range.
 
@@ -20,36 +20,36 @@ RescueMesh is designed for disaster scenarios where traditional communication in
 
 ---
 
-## ✨ Features
+##  Features
 
 ### Core Features (Part 1)
-- ✅ **Incident Rooms** - Create/join emergency rooms with PIN protection
-- ✅ **SOS Messages** - Send categorized distress signals (medical, fire, trapped, etc.)
-- ✅ **"I'm OK" Status** - Let others know you're safe
-- ✅ **Resource Requests** - Request water, food, medicine, transport, etc.
-- ✅ **Danger Reports** - Report fires, collapses, blocked routes
-- ✅ **Mesh Multi-hop** - Automatic store-and-forward message propagation
-- ✅ **Message Deduplication** - Prevents infinite message loops
-- ✅ **TTL (Time-To-Live)** - Controls message propagation depth
-- ✅ **Priority Queues** - SOS messages always propagate first
+- [x] **Incident Rooms** - Create/join emergency rooms with PIN protection
+- [x] **SOS Messages** - Send categorized distress signals (medical, fire, trapped, etc.)
+- [x] **"I'm OK" Status** - Let others know you're safe
+- [x] **Resource Requests** - Request water, food, medicine, transport, etc.
+- [x] **Danger Reports** - Report fires, collapses, blocked routes
+- [x] **Mesh Multi-hop** - Automatic store-and-forward message propagation
+- [x] **Message Deduplication** - Prevents infinite message loops
+- [x] **TTL (Time-To-Live)** - Controls message propagation depth
+- [x] **Priority Queues** - SOS messages always propagate first
 
 ### AI Features (Part 2) - Fully Offline
-- ✅ **Automatic Triage** - AI-powered urgency scoring (0-100)
-- ✅ **Priority Classification** - Critical/High/Medium/Low categorization
-- ✅ **Situation Summary** - "What's happening in 30 seconds" digest
-- ✅ **Basic Translation** - Spanish ↔ English for mixed rescue teams
-- ✅ **Keyword Detection** - Identifies emergency terms automatically
+- [x] **Automatic Triage** - AI-powered urgency scoring (0-100)
+- [x] **Priority Classification** - Critical/High/Medium/Low categorization
+- [x] **Situation Summary** - "What's happening in 30 seconds" digest
+- [x] **Basic Translation** - Spanish  English for mixed rescue teams
+- [x] **Keyword Detection** - Identifies emergency terms automatically
 
 ### Technical Features
-- ✅ **Bluetooth State Monitoring** - Warns when Bluetooth is disabled
-- ✅ **Network Status Dashboard** - Real-time mesh health visualization
-- ✅ **Local Persistence** - Messages survive app restarts
-- ✅ **Inventory Sync** - Request missing messages from peers
-- ✅ **Multi-language Support** - English (default) / Spanish
+- [x] **Bluetooth State Monitoring** - Warns when Bluetooth is disabled
+- [x] **Network Status Dashboard** - Real-time mesh health visualization
+- [x] **Local Persistence** - Messages survive app restarts
+- [x] **Inventory Sync** - Request missing messages from peers
+- [x] **Multi-language Support** - English (default) / Spanish
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 ```
 rescuemesh/
@@ -77,11 +77,11 @@ rescuemesh/
 
 | Layer | Location | Shared |
 |-------|----------|--------|
-| Data Models | commonMain | ✅ 100% |
-| Mesh Logic | commonMain | ✅ 100% |
-| AI Engine | commonMain | ✅ 100% |
-| Localization | commonMain | ✅ 100% |
-| UI/Compose | commonMain | ✅ 100% |
+| Data Models | commonMain | [x] 100% |
+| Mesh Logic | commonMain | [x] 100% |
+| AI Engine | commonMain | [x] 100% |
+| Localization | commonMain | [x] 100% |
+| UI/Compose | commonMain | [x] 100% |
 | Transport (Nearby) | androidMain | Android-only* |
 | Persistence | androidMain | Android-only* |
 
@@ -89,7 +89,7 @@ rescuemesh/
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Requirements
 - Android Studio Hedgehog (2023.1.1) or newer
@@ -122,15 +122,15 @@ adb install composeApp/build/outputs/apk/debug/composeApp-debug.apk
 
 ---
 
-## 📲 How to Test
+##  How to Test
 
 ### Basic Flow
 1. **Launch app** on two or more devices
 2. **Enter your name** on the welcome screen
 3. **Device 1**: Create an Incident Room (note the Room Code and PIN)
 4. **Device 2+**: Join Room using the code and PIN
-5. **Send messages**: Use the action buttons (🆘 SOS, ✓ I'm OK, 📦 Resources, ⚠️ Danger)
-6. **View AI Summary**: Tap 🤖 button to see situation digest
+5. **Send messages**: Use the action buttons ( SOS, OK I'm OK, [Package] Resources, [WARNING] Danger)
+6. **View AI Summary**: Tap [AI] button to see situation digest
 7. **Change language**: Access settings to switch between English/Spanish
 
 ### Testing Mesh Networking
@@ -149,15 +149,15 @@ adb install composeApp/build/outputs/apk/debug/composeApp-debug.apk
 
 ---
 
-## 🧠 AI Implementation
+##  AI Implementation
 
 ### Important: Fully Offline, No External Models
 
 The "AI" in RescueMesh is implemented using **local pattern matching and keyword detection** - it does NOT use:
-- ❌ Cloud AI services (GPT, Claude, etc.)
-- ❌ Pre-trained ML models
-- ❌ TensorFlow/PyTorch
-- ❌ Any network requests
+- [!] Cloud AI services (GPT, Claude, etc.)
+- [!] Pre-trained ML models
+- [!] TensorFlow/PyTorch
+- [!] Any network requests
 
 ### How It Works
 
@@ -187,7 +187,7 @@ fun calculateUrgencyScore(message: MeshMessage): Int {
 
 ---
 
-## 🔧 Technologies
+##  Technologies
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
@@ -201,7 +201,7 @@ fun calculateUrgencyScore(message: MeshMessage): Int {
 
 ---
 
-## 📋 Permissions Required
+##  Permissions Required
 
 ```xml
 <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -220,14 +220,14 @@ fun calculateUrgencyScore(message: MeshMessage): Int {
 
 ---
 
-## 🎬 Demo Video
+##  Demo Video
 
 > A 3-5 minute screencast demonstrating key features is recommended. 
 > [Link to video - TODO: Record before submission]
 
 ---
 
-## 🗺️ Roadmap
+##  Roadmap
 
 - [ ] iOS support via KMP
 - [ ] Desktop support (JVM)
@@ -239,13 +239,13 @@ fun calculateUrgencyScore(message: MeshMessage): Int {
 
 ---
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - [Kotlin Foundation](https://kotlinfoundation.org) for the Kotlin Student Coding Competition
 - [Google Nearby Connections](https://developers.google.com/nearby) for the P2P transport layer
@@ -253,6 +253,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 👤 Author
+##  Author
 
-Built with ❤️ for the Kotlin Student Coding Competition 2025-2026
+Built with  for the Kotlin Student Coding Competition 2025-2026

@@ -61,7 +61,7 @@ fun RoomInfoScreen(
         ) {
             // Nombre de la sala
             Text(
-                text = "🚨",
+                text = "",
                 fontSize = 48.sp
             )
             
@@ -185,7 +185,7 @@ fun RoomInfoScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "📡",
+                            text = "Signal:",
                             fontSize = 28.sp
                         )
                         Text(
@@ -211,7 +211,7 @@ fun RoomInfoScreen(
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
-                    text = "📲",
+                    text = "",
                     fontSize = 20.sp
                 )
                 Spacer(modifier = Modifier.width(8.dp))

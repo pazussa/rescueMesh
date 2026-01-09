@@ -97,7 +97,7 @@ fun SendDangerReportScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "🚧 Bloquea el paso / acceso",
+                    text = "Blocked: Bloquea el paso / acceso",
                     color = RescueMeshColors.OnBackground
                 )
             }
@@ -121,7 +121,7 @@ fun SendDangerReportScreen(
                 enabled = selectedDanger != null
             ) {
                 Text(
-                    text = "⚠️ Reportar Peligro",
+                    text = "WARNING: Reportar Peligro",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
@@ -138,14 +138,14 @@ private fun DangerCard(
     onClick: () -> Unit
 ) {
     val (emoji, label) = when (danger) {
-        DangerType.FIRE -> "🔥" to "Fuego"
-        DangerType.COLLAPSE -> "🏚️" to "Derrumbe"
-        DangerType.FLOOD -> "🌊" to "Inundación"
-        DangerType.GAS_LEAK -> "💨" to "Fuga de gas"
-        DangerType.BLOCKED_ROAD -> "🚧" to "Camino bloqueado"
-        DangerType.UNSAFE_BUILDING -> "🏗️" to "Edificio inseguro"
-        DangerType.ELECTRICAL -> "⚡" to "Eléctrico"
-        DangerType.OTHER -> "⚠️" to "Otro"
+        DangerType.FIRE -> "Fire:" to "Fuego"
+        DangerType.COLLAPSE -> "Collapse:" to "Derrumbe"
+        DangerType.FLOOD -> "Flood:" to "Inundación"
+        DangerType.GAS_LEAK -> "Gas:" to "Fuga de gas"
+        DangerType.BLOCKED_ROAD -> "Blocked:" to "Camino bloqueado"
+        DangerType.UNSAFE_BUILDING -> "" to "Edificio inseguro"
+        DangerType.ELECTRICAL -> "Electrical:" to "Eléctrico"
+        DangerType.OTHER -> "WARNING:" to "Otro"
     }
     
     Card(

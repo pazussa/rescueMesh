@@ -60,7 +60,7 @@ fun RoomScreen(
                     Column {
                         Text(room.name, maxLines = 1, overflow = TextOverflow.Ellipsis)
                         Text(
-                            text = "$connectedPeers ${strings.connected} • ${if (isAdvertising) "📡" else "⏳"}",
+                            text = "$connectedPeers ${strings.connected} • ${if (isAdvertising) "Signal:" else "⏳"}",
                             fontSize = 12.sp,
                             color = RescueMeshColors.OnSurface.copy(alpha = 0.7f)
                         )
@@ -69,7 +69,7 @@ fun RoomScreen(
                 actions = {
                     // Summary button
                     IconButton(onClick = onShowAISummary) {
-                        Text(text = "📊", fontSize = 20.sp)
+                        Text(text = "", fontSize = 20.sp)
                     }
                     // Network status button
                     IconButton(onClick = onShowNetworkStatus) {
@@ -95,13 +95,13 @@ fun RoomScreen(
                         onDismissRequest = { showMenu = false }
                     ) {
                         DropdownMenuItem(
-                            text = { Text("📊 ${strings.situationSummary}") },
+                            text = { Text(" ${strings.situationSummary}") },
                             onClick = {
                                 showMenu = false
                                 onShowAISummary()
                             },
                             leadingIcon = {
-                                Text(text = "📊")
+                                Text(text = "")
                             }
                         )
                         DropdownMenuItem(
@@ -192,7 +192,7 @@ fun RoomScreen(
                         modifier = Modifier.padding(32.dp)
                     ) {
                         Text(
-                            text = "📭",
+                            text = "",
                             fontSize = 64.sp
                         )
                         Spacer(modifier = Modifier.height(16.dp))
@@ -272,16 +272,16 @@ private fun NetworkStatusBanner(
             
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "🔗 Nearby Connections: ${if (isActive) strings.active.uppercase() else strings.inactive.uppercase()}",
+                    text = " Nearby Connections: ${if (isActive) strings.active.uppercase() else strings.inactive.uppercase()}",
                     fontWeight = FontWeight.Bold,
                     fontSize = 13.sp,
                     color = statusColor
                 )
                 Text(
                     text = buildString {
-                        if (isAdvertising) append(if (isEnglish) "📡 Visible" else "📡 Visible")
+                        if (isAdvertising) append(if (isEnglish) "Signal: Visible" else "Signal: Visible")
                         if (isAdvertising && isDiscovering) append(" | ")
-                        if (isDiscovering) append(if (isEnglish) "🔍 Searching" else "🔍 Buscando")
+                        if (isDiscovering) append(if (isEnglish) " Searching" else " Buscando")
                         append(" | $connectedPeers peers")
                     },
                     fontSize = 11.sp,
@@ -321,7 +321,7 @@ private fun ActionBar(
         ) {
             // SOS Button
             ActionButton(
-                emoji = "🆘",
+                emoji = "",
                 label = strings.sendSos,
                 color = RescueMeshColors.Danger,
                 onClick = onSendSos
@@ -329,7 +329,7 @@ private fun ActionBar(
             
             // I'm OK Button
             ActionButton(
-                emoji = "✅",
+                emoji = "OK:",
                 label = strings.imOk,
                 color = RescueMeshColors.Success,
                 onClick = onSendImOk
@@ -337,7 +337,7 @@ private fun ActionBar(
             
             // Chat Button
             ActionButton(
-                emoji = "💬",
+                emoji = "Chat:",
                 label = "Chat",
                 color = if (isChatOpen) RescueMeshColors.Primary else RescueMeshColors.Surface,
                 onClick = onSendChat,
@@ -346,7 +346,7 @@ private fun ActionBar(
             
             // Resource Request
             ActionButton(
-                emoji = "📦",
+                emoji = "Package:",
                 label = strings.requestResources,
                 color = RescueMeshColors.Info,
                 onClick = onSendResource
@@ -354,7 +354,7 @@ private fun ActionBar(
             
             // Danger Report
             ActionButton(
-                emoji = "⚠️",
+                emoji = "WARNING:",
                 label = strings.reportDanger,
                 color = RescueMeshColors.Warning,
                 onClick = onSendDanger
@@ -507,27 +507,27 @@ private fun MessageCard(message: MeshMessage) {
     
     val (emoji, title, content) = when (val c = message.content) {
         is MessageContent.Sos -> Triple(
-            "🆘",
+            "",
             "${strings.messageTypeSos} - ${getSosCategoryText(c.category, isEnglish)}",
             "${c.description}\n${c.peopleCount} ${if (c.peopleCount == 1) strings.person else strings.people}"
         )
         is MessageContent.ImOk -> Triple(
-            "✅",
+            "OK:",
             strings.messageTypeImOk,
             c.message
         )
         is MessageContent.ResourceRequest -> Triple(
-            "📦",
+            "Package:",
             "${if (isEnglish) "Request" else "Solicitud"}: ${getResourceTypeText(c.resourceType, isEnglish)}",
-            "${c.description}\n${strings.quantity}: ${c.quantity}${if (c.urgent) " ⚡ ${strings.urgent.uppercase()}" else ""}"
+            "${c.description}\n${strings.quantity}: ${c.quantity}${if (c.urgent) " Electrical: ${strings.urgent.uppercase()}" else ""}"
         )
         is MessageContent.DangerReport -> Triple(
-            "⚠️",
+            "WARNING:",
             "${if (isEnglish) "Danger" else "Peligro"}: ${getDangerTypeText(c.dangerType, isEnglish)}",
-            "${c.description}\n${strings.severity}: ${c.severity}/10${if (c.isBlocking) " 🚧 ${strings.blocksPassage}" else ""}"
+            "${c.description}\n${strings.severity}: ${c.severity}/10${if (c.isBlocking) " Blocked: ${strings.blocksPassage}" else ""}"
         )
         is MessageContent.Chat -> Triple(
-            "💬",
+            "Chat:",
             strings.messageTypeChat,
             c.text
         )
@@ -607,7 +607,7 @@ private fun MessageCard(message: MeshMessage) {
                     
                     if (message.hopCount > 0) {
                         Text(
-                            text = "🔄 ${message.hopCount} ${if (isEnglish) "hop(s)" else "salto(s)"}",
+                            text = " ${message.hopCount} ${if (isEnglish) "hop(s)" else "salto(s)"}",
                             fontSize = 11.sp,
                             color = RescueMeshColors.OnSurface.copy(alpha = 0.5f)
                         )

@@ -31,7 +31,7 @@ import java.lang.reflect.Method
  * This uses multiple techniques to broadcast emergency presence:
  * 
  * 1. BLUETOOTH NAME HACK: Changes device Bluetooth name to emergency message
- *    - Anyone scanning for Bluetooth devices will see: "🆘SOS-RESCUEMESH-HELP"
+ *    - Anyone scanning for Bluetooth devices will see: "SOS-RESCUEMESH-HELP"
  *    - Works on ALL Android devices when they open Bluetooth settings
  * 
  * 2. WIFI HOTSPOT NAME HACK: Creates hotspot with emergency SSID
@@ -52,7 +52,7 @@ object EmergencyBroadcaster {
     private const val TAG = "EmergencyBroadcaster"
     
     // Emergency messages (short due to name length limits)
-    private const val BT_EMERGENCY_NAME = "🆘SOS-RESCUEMESH-HELP"
+    private const val BT_EMERGENCY_NAME = "SOS-RESCUEMESH-HELP"
     private const val WIFI_EMERGENCY_SSID = "SOS-EMERGENCY-RESCUEMESH"
     private const val P2P_SERVICE_NAME = "_rescuemesh_sos._tcp"
     
@@ -142,7 +142,7 @@ object EmergencyBroadcaster {
      * HACK EXPLANATION:
      * When anyone opens their Bluetooth settings and scans for devices,
      * they will see our device with the emergency name like:
-     * "🆘SOS-RESCUEMESH-HELP" or "🆘SOS-ROOM:ABC123"
+     * "SOS-RESCUEMESH-HELP" or "SOS-ROOM:ABC123"
      * 
      * This works because Bluetooth device names are visible to ALL nearby devices
      * during scanning, without requiring any app or pairing.
@@ -154,14 +154,14 @@ object EmergencyBroadcaster {
             val bluetoothAdapter = bluetoothManager?.adapter
             
             if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled) {
-                return "❌ Bluetooth: Disabled or unavailable"
+                return " Bluetooth: Disabled or unavailable"
             }
             
             // Check permission
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 if (ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) 
                     != PackageManager.PERMISSION_GRANTED) {
-                    return "❌ Bluetooth: Permission denied"
+                    return " Bluetooth: Permission denied"
                 }
             }
             
@@ -170,7 +170,7 @@ object EmergencyBroadcaster {
             
             // Create emergency name (max ~248 chars, but keep short for visibility)
             val emergencyName = if (roomCode.isNotEmpty()) {
-                "🆘SOS-RM:$roomCode"  // Include room code
+                "SOS-RM:$roomCode"  // Include room code
             } else {
                 BT_EMERGENCY_NAME
             }
@@ -189,14 +189,14 @@ object EmergencyBroadcaster {
             }
             
             if (success) {
-                "✅ Bluetooth: Name set to '$emergencyName'"
+                "OK: Bluetooth: Name set to '$emergencyName'"
             } else {
-                "⚠️ Bluetooth: Could not change name"
+                "WARNING: Bluetooth: Could not change name"
             }
             
         } catch (e: Exception) {
             Log.e(TAG, "Bluetooth name hack failed", e)
-            "❌ Bluetooth: ${e.message}"
+            " Bluetooth: ${e.message}"
         }
     }
     
@@ -237,13 +237,13 @@ object EmergencyBroadcaster {
             wifiP2pManager = context.getSystemService(Context.WIFI_P2P_SERVICE) as? WifiP2pManager
             
             if (wifiP2pManager == null) {
-                return "❌ WiFi P2P: Not supported"
+                return " WiFi P2P: Not supported"
             }
             
             wifiP2pChannel = wifiP2pManager?.initialize(context, Looper.getMainLooper(), null)
             
             if (wifiP2pChannel == null) {
-                return "❌ WiFi P2P: Could not initialize"
+                return " WiFi P2P: Could not initialize"
             }
             
             // Create service info with emergency data
@@ -271,11 +271,11 @@ object EmergencyBroadcaster {
                 }
             })
             
-            "✅ WiFi P2P: Service broadcasting"
+            "OK: WiFi P2P: Service broadcasting"
             
         } catch (e: Exception) {
             Log.e(TAG, "WiFi P2P hack failed", e)
-            "❌ WiFi P2P: ${e.message}"
+            " WiFi P2P: ${e.message}"
         }
     }
     
@@ -313,7 +313,7 @@ object EmergencyBroadcaster {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 if (ContextCompat.checkSelfPermission(context, Manifest.permission.NEARBY_WIFI_DEVICES)
                     != PackageManager.PERMISSION_GRANTED) {
-                    return "❌ WiFi Direct: Permission denied"
+                    return " WiFi Direct: Permission denied"
                 }
             }
             
@@ -328,11 +328,11 @@ object EmergencyBroadcaster {
                 }
             })
             
-            "✅ WiFi Direct: Group created"
+            "OK: WiFi Direct: Group created"
             
         } catch (e: Exception) {
             Log.e(TAG, "WiFi Direct hack failed", e)
-            "❌ WiFi Direct: ${e.message}"
+            " WiFi Direct: ${e.message}"
         }
     }
     
@@ -391,18 +391,18 @@ object EmergencyBroadcaster {
     fun getBroadcastExplanation(isEnglish: Boolean): String {
         return if (isEnglish) {
             """
-            📡 EMERGENCY BROADCAST ACTIVE
+            Signal: EMERGENCY BROADCAST ACTIVE
             
             Your phone is now broadcasting emergency signals that are visible to ALL nearby devices, even without RescueMesh installed:
             
-            📶 BLUETOOTH:
+             BLUETOOTH:
             When people scan for Bluetooth devices, they will see:
             "${BT_EMERGENCY_NAME}"
             
-            📶 WIFI DIRECT:
+             WIFI DIRECT:
             When people scan for WiFi Direct, they will see your device advertising an emergency service.
             
-            ⚠️ TELL PEOPLE NEARBY:
+            WARNING: TELL PEOPLE NEARBY:
             "Open your Bluetooth settings and look for a device named SOS-RESCUEMESH"
             "Then ask me how to get the app!"
             
@@ -410,18 +410,18 @@ object EmergencyBroadcaster {
             """.trimIndent()
         } else {
             """
-            📡 TRANSMISIÓN DE EMERGENCIA ACTIVA
+            Signal: TRANSMISIÓN DE EMERGENCIA ACTIVA
             
             Tu teléfono ahora transmite señales de emergencia visibles para TODOS los dispositivos cercanos, incluso sin RescueMesh instalado:
             
-            📶 BLUETOOTH:
+             BLUETOOTH:
             Cuando busquen dispositivos Bluetooth, verán:
             "${BT_EMERGENCY_NAME}"
             
-            📶 WIFI DIRECT:
+             WIFI DIRECT:
             Cuando busquen WiFi Direct, verán tu dispositivo anunciando un servicio de emergencia.
             
-            ⚠️ DILE A LA GENTE CERCANA:
+            WARNING: DILE A LA GENTE CERCANA:
             "Abre tu configuración de Bluetooth y busca un dispositivo llamado SOS-RESCUEMESH"
             "¡Luego pregúntame cómo obtener la app!"
             

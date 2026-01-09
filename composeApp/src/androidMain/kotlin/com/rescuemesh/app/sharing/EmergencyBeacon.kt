@@ -62,7 +62,7 @@ object EmergencyBeacon {
     
     /**
      * Start the emergency beacon
-     * Makes device visible as "🆘 EMERGENCY - Install RescueMesh"
+     * Makes device visible as " EMERGENCY - Install RescueMesh"
      */
     fun startBeacon(context: Context, onShareReminder: () -> Unit) {
         if (isAdvertising) return
@@ -192,9 +192,9 @@ object EmergencyBeacon {
     fun getEmergencyShareMessage(isEnglish: Boolean): String {
         return if (isEnglish) {
             """
-            🆘 EMERGENCY - RescueMesh Network Active
+             EMERGENCY - RescueMesh Network Active
             
-            ⚠️ IMPORTANT: Phones without this app cannot receive automatic notifications.
+            WARNING: IMPORTANT: Phones without this app cannot receive automatic notifications.
             
             TO HELP OTHERS JOIN:
             1. Open Bluetooth settings on nearby phones
@@ -210,13 +210,13 @@ object EmergencyBeacon {
             3. Install and open RescueMesh
             4. Join the Incident Room with the code you provide
             
-            📱 Share this app NOW to save lives!
+             Share this app NOW to save lives!
             """.trimIndent()
         } else {
             """
-            🆘 EMERGENCIA - Red RescueMesh Activa
+             EMERGENCIA - Red RescueMesh Activa
             
-            ⚠️ IMPORTANTE: Los teléfonos sin esta app NO pueden recibir notificaciones automáticas.
+            WARNING: IMPORTANTE: Los teléfonos sin esta app NO pueden recibir notificaciones automáticas.
             
             PARA AYUDAR A OTROS A UNIRSE:
             1. Abran Ajustes de Bluetooth en teléfonos cercanos
@@ -232,7 +232,7 @@ object EmergencyBeacon {
             3. Instalar y abrir RescueMesh
             4. Unirse a la Sala de Incidente con el código que proporciones
             
-            📱 ¡Comparte esta app AHORA para salvar vidas!
+             ¡Comparte esta app AHORA para salvar vidas!
             """.trimIndent()
         }
     }
