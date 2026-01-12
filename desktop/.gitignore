@@ -1,0 +1,4 @@
+# Desktop Distribution Files
+# Estos archivos JAR deben estar incluidos en el repositorio
+!*.jar
+!RescueMesh*.jar

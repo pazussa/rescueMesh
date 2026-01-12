@@ -37,13 +37,48 @@ RescueMesh is a mobile mesh network application designed for emergency and disas
 - **QR code room joining** - Easy onboarding for new participants
 - **Emergency broadcast mode** - Make your device visible to all nearby phones
 
+## Platform Support
+
+### 🖥️ Desktop Application
+RescueMesh includes a **native desktop application** for Windows, macOS, and Linux. The desktop version provides:
+- **Emergency operations center** - Monitor and coordinate mesh network activity from a computer
+- **Testing and development** - Test mesh network protocols without mobile devices
+- **Message monitoring** - View and manage emergency communications on a larger screen
+- **Cross-platform Kotlin Multiplatform** - Shared codebase with mobile versions
+
+**Pre-built Desktop Apps:**
+Las aplicaciones de escritorio pre-compiladas están disponibles en la carpeta `desktop/`:
+- **Linux**: `desktop/Linux/` - Incluye JAR y script de ejecución
+- **Windows**: `desktop/Windows/` - Incluye JAR y script batch
+
+Ver [desktop/README.md](desktop/README.md) para instrucciones detalladas.
+
+**Running from Source:**
+```bash
+./gradlew :composeApp:run
+```
+
+**Building Desktop Distribution:**
+```bash
+./gradlew :composeApp:packageUberJarForCurrentOS
+```
+
+### 📱 Android Mobile App
+Primary platform with full mesh networking capabilities using Google Nearby Connections API.
+
+### 🍎 iOS Support
+iOS implementation is in development. See [iOS_SETUP.md](iOS_SETUP.md) for configuration instructions.
+
+---
+
 ## Installation
 
 ### Prerequisites
-- Android device running Android 6.0 (API 23) or higher
-- Bluetooth and Location permissions (required for Nearby Connections)
+- **Android**: Device running Android 6.0 (API 23) or higher with Bluetooth and Location permissions
+- **Desktop**: JDK 11 or higher for running the desktop application
+- **iOS**: See [iOS_SETUP.md](iOS_SETUP.md)
 
-### Installing from APK
+### Installing Android from APK
 
 1. Download the APK file to your Android device
 2. Open the APK file to begin installation
@@ -59,19 +94,29 @@ RescueMesh is a mobile mesh network application designed for emergency and disas
    cd rescuemesh
    ```
 
-2. Build the debug APK:
+2. **For Android** - Build the debug APK:
    ```bash
    ./gradlew :composeApp:assembleDebug
    ```
 
-3. The APK will be generated at:
+   The APK will be generated at:
    ```
    composeApp/build/outputs/apk/debug/composeApp-debug.apk
    ```
 
-4. Install on a connected device:
+   Install on a connected device:
    ```bash
    adb install -r composeApp/build/outputs/apk/debug/composeApp-debug.apk
+   ```
+
+3. **For Desktop** - Run directly:
+   ```bash
+   ./gradlew :composeApp:run
+   ```
+
+   Or create a distributable package:
+   ```bash
+   ./gradlew :composeApp:packageUberJarForCurrentOS
    ```
 
 ## Quick Start
@@ -93,9 +138,9 @@ RescueMesh is a mobile mesh network application designed for emergency and disas
 ## Technical Architecture
 
 ### Technology Stack
-- **Kotlin Multiplatform** - Cross-platform codebase (Android primary target)
-- **Jetpack Compose** - Modern declarative UI
-- **Google Nearby Connections** - Mesh networking transport layer
+- **Kotlin Multiplatform** - Cross-platform codebase for Android, Desktop, and iOS
+- **Jetpack Compose & Compose Multiplatform** - Modern declarative UI across all platforms
+- **Google Nearby Connections** - Mesh networking transport layer (Android)
 - **kotlinx.serialization** - Message serialization
 - **Coroutines & Flow** - Asynchronous programming
 
@@ -124,11 +169,17 @@ RescueMesh is a mobile mesh network application designed for emergency and disas
 rescuemesh/
 ├── composeApp/
 │   ├── src/
-│   │   ├── androidMain/     # Android-specific implementation
-│   │   ├── commonMain/      # Shared Kotlin code
-│   │   ├── desktopMain/     # Desktop implementation (experimental)
-│   │   └── iosMain/         # iOS implementation (experimental)
+│   │   ├── androidMain/     # Android-specific implementation (primary)
+│   │   ├── commonMain/      # Shared Kotlin code (business logic & UI)
+│   │   ├── desktopMain/     # Desktop implementation (Windows/macOS/Linux)
+│   │   └── iosMain/         # iOS implementation (in development)
 │   └── build.gradle.kts
+├── desktop/                 # Pre-built desktop applications
+│   ├── Linux/              # Linux version with run script
+│   ├── Windows/            # Windows version with batch file
+│   └── README.md
+├── iosApp/                  # iOS native project
+├── iOS_SETUP.md            # iOS configuration guide
 ├── gradle/
 ├── build.gradle.kts
 └── settings.gradle.kts
