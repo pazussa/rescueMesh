@@ -160,5 +160,5 @@ juanpa1@unicaucax.edu.co
 Repository: https://github.com/pazussa/rescueMesh 
 
 
-Developed for the Kotlin Multiplatform Contest 2025/2025 ❤️ 
+Developed for the Kotlin Multiplatform Contest 2025/2026 ❤️ 
  
