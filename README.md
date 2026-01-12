@@ -156,7 +156,7 @@ RescueMesh is designed as an emergency communication tool. While it employs encr
 - Always follow official emergency protocols and instructions
 
 ## Contact
-juanpa1@unicaucax.edu.co 
+juanpa1@unicauca.edu.co 
 Repository: https://github.com/pazussa/rescueMesh 
 
 
