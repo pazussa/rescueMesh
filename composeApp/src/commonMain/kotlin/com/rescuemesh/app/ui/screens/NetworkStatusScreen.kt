@@ -48,7 +48,7 @@ fun NetworkStatusScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Estado de la Red Mesh") },
+                title = { Text("Mesh Network Status") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -56,7 +56,7 @@ fun NetworkStatusScreen(
                 },
                 actions = {
                     IconButton(onClick = onRefreshInventory) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Sincronizar")
+                        Icon(Icons.Default.Refresh, contentDescription = "Sync")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -110,7 +110,7 @@ fun NetworkStatusScreen(
             // Lista de peers conectados
             item {
                 Text(
-                    text = "Dispositivos Conectados (${connectedPeers.size})",
+                    text = "Connected Devices (${connectedPeers.size})",
                     fontWeight = FontWeight.Bold,
                     color = RescueMeshColors.OnBackground,
                     fontSize = 16.sp
@@ -132,18 +132,18 @@ fun NetworkStatusScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "Signal:",
+                                text = "📡",
                                 fontSize = 48.sp
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "Buscando dispositivos cercanos...",
+                                text = "Searching for nearby devices...",
                                 color = RescueMeshColors.OnSurface,
                                 textAlign = TextAlign.Center
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = "Asegúrate de que otros dispositivos\ntengan la app abierta en la misma sala",
+                                text = "Make sure other devices have\nthe app open in the same room",
                                 color = RescueMeshColors.OnSurface.copy(alpha = 0.6f),
                                 fontSize = 12.sp,
                                 textAlign = TextAlign.Center
@@ -210,7 +210,7 @@ private fun NetworkStatusHeader(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = if (isActive) "Signal:" else "⏳",
+                    text = if (isActive) "📡" else "⏳",
                     fontSize = 28.sp
                 )
             }
@@ -219,16 +219,16 @@ private fun NetworkStatusHeader(
             
             Column {
                 Text(
-                    text = if (isActive) "NEARBY CONNECTIONS ACTIVO" else "INICIANDO...",
+                    text = if (isActive) "NEARBY CONNECTIONS ACTIVE" else "STARTING...",
                     fontWeight = FontWeight.Bold,
                     color = statusColor,
                     fontSize = 16.sp
                 )
                 Text(
                     text = if (isActive) 
-                        "Red mesh funcionando correctamente" 
+                        "Mesh network running correctly" 
                     else 
-                        "Esperando permisos o conexión",
+                        "Waiting for permissions or connection",
                     color = RescueMeshColors.OnSurface.copy(alpha = 0.7f),
                     fontSize = 13.sp
                 )
@@ -250,7 +250,7 @@ private fun RoomInfoCard(roomId: String, roomName: String) {
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "Sala Activa",
+                text = "Active Room",
                 fontWeight = FontWeight.Bold,
                 color = RescueMeshColors.Primary,
                 fontSize = 14.sp
@@ -300,18 +300,18 @@ private fun NearbyConnectionsStatusCard(
             
             // Estado de Advertising
             StatusRow(
-                label = "Advertising (visible para otros)",
+                label = "Advertising (visible to others)",
                 isActive = isAdvertising,
-                description = if (isAdvertising) "Otros dispositivos pueden encontrarte" else "No visible"
+                description = if (isAdvertising) "Other devices can find you" else "Not visible"
             )
             
             Spacer(modifier = Modifier.height(8.dp))
             
             // Estado de Discovery
             StatusRow(
-                label = "Discovery (buscando otros)",
+                label = "Discovery (searching for others)",
                 isActive = isDiscovering,
-                description = if (isDiscovering) "Buscando dispositivos cercanos" else "No buscando"
+                description = if (isDiscovering) "Searching for nearby devices" else "Not searching"
             )
             
             Spacer(modifier = Modifier.height(12.dp))
@@ -326,12 +326,12 @@ private fun NearbyConnectionsStatusCard(
             ) {
                 StatItem(
                     value = connectedCount.toString(),
-                    label = "Conectados",
+                    label = "Connected",
                     color = RescueMeshColors.Success
                 )
                 StatItem(
                     value = discoveredCount.toString(),
-                    label = "Descubiertos",
+                    label = "Discovered",
                     color = RescueMeshColors.Info
                 )
             }
@@ -411,7 +411,7 @@ private fun MeshStatsCard(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = " Estadísticas del Mesh",
+                text = "📊 Mesh Statistics",
                 fontWeight = FontWeight.Bold,
                 color = RescueMeshColors.OnSurface,
                 fontSize = 14.sp
@@ -425,17 +425,17 @@ private fun MeshStatsCard(
             ) {
                 StatItem(
                     value = totalMessages.toString(),
-                    label = "Mensajes",
+                    label = "Messages",
                     color = RescueMeshColors.Primary
                 )
                 StatItem(
                     value = pendingForward.toString(),
-                    label = "Pendientes reenvío",
+                    label = "Pending forward",
                     color = RescueMeshColors.Warning
                 )
                 StatItem(
                     value = (connectedPeers * 100).toString() + "m",
-                    label = "Alcance aprox.",
+                    label = "Approx. range",
                     color = RescueMeshColors.Info
                 )
             }
@@ -510,13 +510,13 @@ private fun PeerCard(
                 horizontalAlignment = Alignment.End
             ) {
                 Text(
-                    text = "OK Conectado",
+                    text = "✓ Connected",
                     color = RescueMeshColors.Success,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium
                 )
                 Text(
-                    text = "vía Nearby",
+                    text = "via Nearby",
                     color = RescueMeshColors.OnSurface.copy(alpha = 0.5f),
                     fontSize = 10.sp
                 )
@@ -538,7 +538,7 @@ private fun TechnicalInfoCard() {
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "ℹ️ Cómo funciona Nearby Connections",
+                text = "ℹ️ How Nearby Connections Works",
                 fontWeight = FontWeight.Bold,
                 color = RescueMeshColors.Info,
                 fontSize = 14.sp
@@ -547,12 +547,12 @@ private fun TechnicalInfoCard() {
             Spacer(modifier = Modifier.height(12.dp))
             
             val technicalInfo = listOf(
-                " Usa WiFi Direct, Bluetooth y BLE automáticamente",
-                " Conexiones encriptadas end-to-end",
-                "Signal: Alcance: ~100m por salto (sin obstáculos)",
-                " Multi-hop: mensajes se reenvían automáticamente",
-                " Store-and-forward: mensajes persisten localmente",
-                " Estrategia: P2P_CLUSTER (múltiples conexiones)"
+                "📶 Uses WiFi Direct, Bluetooth and BLE automatically",
+                "🔒 End-to-end encrypted connections",
+                "📡 Range: ~100m per hop (without obstacles)",
+                "🔄 Multi-hop: messages are forwarded automatically",
+                "💾 Store-and-forward: messages persist locally",
+                "🔗 Strategy: P2P_CLUSTER (multiple connections)"
             )
             
             technicalInfo.forEach { info ->

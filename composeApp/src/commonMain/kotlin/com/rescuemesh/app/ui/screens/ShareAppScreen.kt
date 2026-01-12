@@ -94,38 +94,6 @@ fun ShareAppScreen(
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // CRITICAL WARNING BANNER
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = RescueMeshColors.Warning
-                ),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    Text(
-                        text = "WARNING: ${if (isEnglish) "IMPORTANT LIMITATION" else "LIMITACIÓN IMPORTANTE"}",
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black,
-                        fontSize = 16.sp
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = if (isEnglish)
-                            "Devices WITHOUT this app installed CANNOT receive automatic notifications or messages. You MUST manually share this APK with everyone nearby!"
-                        else
-                            "Los dispositivos SIN esta app instalada NO PUEDEN recibir notificaciones ni mensajes automáticos. ¡DEBES compartir manualmente este APK con todos los cercanos!",
-                        color = Color.Black,
-                        fontSize = 14.sp,
-                        lineHeight = 20.sp
-                    )
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
             // ================================================================
             // HACK: EMERGENCY BROADCAST - Makes device visible to everyone!
             // ================================================================
