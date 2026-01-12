@@ -44,9 +44,9 @@ fun SituationSummaryScreen(
             TopAppBar(
                 title = { 
                     Column {
-                        Text("Resumen de Situación")
+                        Text("Situation Summary")
                         Text(
-                            text = " Actualizado automáticamente",
+                            text = " Automatically updated",
                             fontSize = 12.sp,
                             color = RescueMeshColors.OnSurface.copy(alpha = 0.7f)
                         )
@@ -59,7 +59,7 @@ fun SituationSummaryScreen(
                 },
                 actions = {
                     IconButton(onClick = onRefresh) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Actualizar")
+                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -98,7 +98,7 @@ fun SituationSummaryScreen(
             if (summary.priorityMessages.isNotEmpty()) {
                 item {
                     Text(
-                        text = " Mensajes Prioritarios (${summary.priorityMessages.size})",
+                        text = " Priority Messages (${summary.priorityMessages.size})",
                         fontWeight = FontWeight.Bold,
                         color = RescueMeshColors.OnBackground,
                         fontSize = 16.sp
@@ -114,7 +114,7 @@ fun SituationSummaryScreen(
             if (summary.dangerZones.isNotEmpty()) {
                 item {
                     Text(
-                        text = "WARNING: Zonas de Peligro (${summary.dangerZones.size})",
+                        text = "WARNING: Danger Zones (${summary.dangerZones.size})",
                         fontWeight = FontWeight.Bold,
                         color = RescueMeshColors.OnBackground,
                         fontSize = 16.sp
@@ -130,7 +130,7 @@ fun SituationSummaryScreen(
             if (summary.resourceNeeds.isNotEmpty()) {
                 item {
                     Text(
-                        text = "Package: Recursos Necesarios",
+                        text = "📦 Resource Needs",
                         fontWeight = FontWeight.Bold,
                         color = RescueMeshColors.OnBackground,
                         fontSize = 16.sp
@@ -180,9 +180,9 @@ private fun SummaryCard(summary: SituationSummary) {
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
                     text = when {
-                        summary.criticalCount > 0 -> "SITUACIÓN CRÍTICA"
-                        summary.activeSOSCount > 0 -> "Emergencias Activas"
-                        else -> "Situación Estable"
+                        summary.criticalCount > 0 -> "CRITICAL SITUATION"
+                        summary.activeSOSCount > 0 -> "Active Emergencies"
+                        else -> "Stable Situation"
                     },
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
@@ -219,21 +219,21 @@ private fun QuickStatsRow(summary: SituationSummary) {
             modifier = Modifier.weight(1f),
             emoji = "",
             value = summary.totalPeopleAffected.toString(),
-            label = "Personas",
+            label = "People",
             color = RescueMeshColors.Warning
         )
         StatBox(
             modifier = Modifier.weight(1f),
-            emoji = "OK:",
+            emoji = "✓",
             value = summary.safeCount.toString(),
-            label = "A Salvo",
+            label = "Safe",
             color = RescueMeshColors.Success
         )
         StatBox(
             modifier = Modifier.weight(1f),
             emoji = "",
             value = summary.totalMessages.toString(),
-            label = "Mensajes",
+            label = "Messages",
             color = RescueMeshColors.Info
         )
     }
@@ -295,13 +295,13 @@ private fun CriticalAlertCard(count: Int) {
             Spacer(modifier = Modifier.width(12.dp))
             Column {
                 Text(
-                    text = "$count EMERGENCIAS CRÍTICAS",
+                    text = "$count CRITICAL EMERGENCIES",
                     fontWeight = FontWeight.Bold,
                     color = RescueMeshColors.OnPrimary,
                     fontSize = 16.sp
                 )
                 Text(
-                    text = "Requieren atención inmediata",
+                    text = "Require immediate attention",
                     color = RescueMeshColors.OnPrimary.copy(alpha = 0.9f),
                     fontSize = 13.sp
                 )
@@ -367,7 +367,7 @@ private fun DangerZoneCard(danger: DangerZoneInfo) {
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Text(
-                        text = "Nivel ${danger.severity}",
+                        text = "Level ${danger.severity}",
                         fontSize = 11.sp,
                         color = severityColor,
                         fontWeight = FontWeight.Bold
@@ -376,7 +376,7 @@ private fun DangerZoneCard(danger: DangerZoneInfo) {
                 if (danger.isBlocking) {
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = " Bloquea paso",
+                        text = "⚠️ Blocks passage",
                         fontSize = 11.sp,
                         color = RescueMeshColors.Danger
                     )
@@ -427,7 +427,7 @@ private fun ResourceNeedCard(need: ResourceNeedInfo) {
                 )
                 if (need.urgent) {
                     Text(
-                        text = "Electrical: URGENTE",
+                        text = "⚡ URGENT",
                         color = RescueMeshColors.Warning,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold
@@ -457,24 +457,24 @@ private fun SummaryInfoCard() {
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "ℹ️ Acerca del Resumen",
+                text = "ℹ️ About This Summary",
                 fontWeight = FontWeight.Bold,
                 color = RescueMeshColors.Info,
                 fontSize = 14.sp
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Este resumen se genera automáticamente analizando los mensajes recibidos. " +
-                       "Detecta urgencias y prioriza la información más importante para darte una visión rápida de la situación.",
+                text = "This summary is automatically generated by analyzing received messages. " +
+                       "It detects urgencies and prioritizes the most important information to give you a quick overview of the situation.",
                 fontSize = 12.sp,
                 color = RescueMeshColors.OnBackground.copy(alpha = 0.7f),
                 lineHeight = 18.sp
             )
             Spacer(modifier = Modifier.height(8.dp))
             Row {
-                Text(text = "OK ", color = RescueMeshColors.Success, fontSize = 12.sp)
+                Text(text = "✓ ", color = RescueMeshColors.Success, fontSize = 12.sp)
                 Text(
-                    text = "100% offline • Análisis local • Actualización automática",
+                    text = "100% offline • Local analysis • Automatic updates",
                     fontSize = 12.sp,
                     color = RescueMeshColors.OnBackground.copy(alpha = 0.6f)
                 )
@@ -492,8 +492,8 @@ private fun PriorityMessageCard(msg: PriorityMessageInfo) {
     }
     
     val priorityLabel = when (msg.priority) {
-        MessagePriority.CRITICAL -> "CRÍTICO"
-        MessagePriority.HIGH -> "ALTO"
+        MessagePriority.CRITICAL -> "CRITICAL"
+        MessagePriority.HIGH -> "HIGH"
         else -> "NORMAL"
     }
     
@@ -568,9 +568,9 @@ private fun formatTimeAgo(timestamp: Long): String {
     val diff = now - timestamp
     
     return when {
-        diff < 60_000 -> "Hace un momento"
-        diff < 3600_000 -> "Hace ${diff / 60_000} min"
-        diff < 86400_000 -> "Hace ${diff / 3600_000} horas"
-        else -> "Hace ${diff / 86400_000} días"
+        diff < 60_000 -> "Just now"
+        diff < 3600_000 -> "${diff / 60_000} min ago"
+        diff < 86400_000 -> "${diff / 3600_000} hours ago"
+        else -> "${diff / 86400_000} days ago"
     }
 }
