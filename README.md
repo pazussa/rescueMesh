@@ -159,4 +159,4 @@ RescueMesh is designed as an emergency communication tool. While it employs encr
 
 Repository: https://github.com/pazussa/rescueMesh
 
-For emergency situations, always contact official emergency services first (911, 112, etc.).
+ 
