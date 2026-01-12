@@ -125,8 +125,10 @@ class NearbyConnectionsManager(
             advertisingOptions
         ).addOnSuccessListener {
             _isAdvertising.value = true
-        }.addOnFailureListener {
+            Log.d(TAG, "Advertising iniciado: $endpointName")
+        }.addOnFailureListener { e ->
             _isAdvertising.value = false
+            Log.e(TAG, "Error iniciando advertising: ${e.message}")
         }
     }
     
@@ -152,8 +154,10 @@ class NearbyConnectionsManager(
             discoveryOptions
         ).addOnSuccessListener {
             _isDiscovering.value = true
-        }.addOnFailureListener {
+            Log.d(TAG, "Discovery iniciado para room: ${currentRoom?.id}")
+        }.addOnFailureListener { e ->
             _isDiscovering.value = false
+            Log.e(TAG, "Error iniciando discovery: ${e.message}")
         }
     }
     
@@ -237,10 +241,14 @@ class NearbyConnectionsManager(
                 Log.d(TAG, "Conectado a peer: $peerName ($endpointId)")
             } else {
                 Log.w(TAG, "Conexión fallida con $endpointId: ${result.status}")
+                // Remover de descubiertos para permitir re-descubrimiento
+                _discoveredPeers.value = _discoveredPeers.value - endpointId
             }
         }
         
         override fun onDisconnected(endpointId: String) {
+            val peerName = _connectedPeers.value[endpointId]?.deviceName ?: "Unknown"
+            Log.d(TAG, "Peer desconectado: $peerName ($endpointId)")
             _connectedPeers.value = _connectedPeers.value - endpointId
         }
     }

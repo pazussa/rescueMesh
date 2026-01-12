@@ -1,4 +1,4 @@
-name: Build Android & iOS
+name: Build Android, Desktop & iOS
 
 on:
   push:
@@ -44,6 +44,96 @@ jobs:
       with:
         name: RescueMesh-Android-Release
         path: composeApp/build/outputs/apk/release/composeApp-release-unsigned.apk
+
+  build-desktop-linux:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+      
+    - name: Grant execute permission for gradlew
+      run: chmod +x ./gradlew
+      
+    - name: Create Desktop icon
+      run: |
+        mkdir -p composeApp/src/desktopMain/resources
+        # Create a simple green icon
+        python3 -c "
+from PIL import Image, ImageDraw
+img = Image.new('RGB', (256, 256), color=(46, 125, 50))
+d = ImageDraw.Draw(img)
+d.rectangle([20, 20, 236, 236], outline='white', width=4)
+img.save('composeApp/src/desktopMain/resources/icon.png')
+" || echo "Using placeholder"
+      
+    - name: Build Desktop DEB package
+      run: ./gradlew :composeApp:packageDeb
+      
+    - name: Build Desktop JAR (portable)
+      run: ./gradlew :composeApp:packageUberJarForCurrentOS
+      
+    - name: Upload DEB package
+      uses: actions/upload-artifact@v4
+      with:
+        name: RescueMesh-Desktop-DEB
+        path: composeApp/build/compose/binaries/main/deb/*.deb
+        
+    - name: Upload portable JAR
+      uses: actions/upload-artifact@v4
+      with:
+        name: RescueMesh-Desktop-JAR-Linux
+        path: composeApp/build/compose/jars/*.jar
+
+  build-desktop-windows:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
+      
+    - name: Create Desktop icon
+      shell: powershell
+      run: |
+        New-Item -ItemType Directory -Force -Path composeApp/src/desktopMain/resources
+        # Simple placeholder for Windows build
+        Add-Content -Path composeApp/src/desktopMain/resources/icon.ico -Value ""
+      
+    - name: Build Desktop MSI package
+      run: ./gradlew :composeApp:packageMsi
+      
+    - name: Build Desktop JAR (portable)
+      run: ./gradlew :composeApp:packageUberJarForCurrentOS
+      
+    - name: Upload MSI package
+      uses: actions/upload-artifact@v4
+      with:
+        name: RescueMesh-Desktop-MSI
+        path: composeApp/build/compose/binaries/main/msi/*.msi
+        
+    - name: Upload portable JAR (Windows)
+      uses: actions/upload-artifact@v4
+      with:
+        name: RescueMesh-Desktop-JAR-Windows
+        path: composeApp/build/compose/jars/*.jar
 
   build-ios:
     runs-on: macos-14  # macOS Sonoma con Apple Silicon

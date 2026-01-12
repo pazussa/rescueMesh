@@ -1,13 +1,22 @@
 package com.rescuemesh.app.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,10 +28,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.rescuemesh.app.localization.LanguageManager
 import com.rescuemesh.app.localization.rememberStrings
 import com.rescuemesh.app.model.*
-import com.rescuemesh.app.ui.components.NetworkStatusBanner
 import com.rescuemesh.app.ui.theme.RescueMeshColors
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
@@ -50,442 +57,251 @@ fun RoomScreen(
     var chatMessage by remember { mutableStateOf("") }
     var showChatInput by remember { mutableStateOf(false) }
     val strings = rememberStrings()
-    val currentLanguage by LanguageManager.currentLanguage.collectAsState()
-    val isEnglish = currentLanguage == LanguageManager.Language.ENGLISH
-    
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { 
-                    Column {
-                        Text(room.name, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                        Text(
-                            text = "$connectedPeers ${strings.connected} • ${if (isAdvertising) "Signal:" else "⏳"}",
-                            fontSize = 12.sp,
-                            color = RescueMeshColors.OnSurface.copy(alpha = 0.7f)
-                        )
-                    }
-                },
-                actions = {
-                    // Summary button
-                    IconButton(onClick = onShowAISummary) {
-                        Text(text = "", fontSize = 20.sp)
-                    }
-                    // Network status button
-                    IconButton(onClick = onShowNetworkStatus) {
-                        Icon(
-                            Icons.Default.Settings,
-                            contentDescription = strings.networkStatus,
-                            tint = if (isAdvertising && isDiscovering) 
-                                RescueMeshColors.Success 
-                            else if (isAdvertising || isDiscovering)
-                                RescueMeshColors.Warning
-                            else 
-                                RescueMeshColors.Danger
-                        )
-                    }
-                    IconButton(onClick = onShowRoomInfo) {
-                        Icon(Icons.Default.Info, contentDescription = strings.roomInfo)
-                    }
-                    IconButton(onClick = { showMenu = true }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = strings.menu)
-                    }
-                    DropdownMenu(
-                        expanded = showMenu,
-                        onDismissRequest = { showMenu = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text(" ${strings.situationSummary}") },
-                            onClick = {
-                                showMenu = false
-                                onShowAISummary()
-                            },
-                            leadingIcon = {
-                                Text(text = "")
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(strings.networkStatus) },
-                            onClick = {
-                                showMenu = false
-                                onShowNetworkStatus()
-                            },
-                            leadingIcon = {
-                                Icon(Icons.Default.Settings, contentDescription = null)
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(strings.leaveRoom) },
-                            onClick = {
-                                showMenu = false
-                                onLeaveRoom()
-                            },
-                            leadingIcon = {
-                                Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = null)
-                            }
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = RescueMeshColors.Surface,
-                    titleContentColor = RescueMeshColors.OnSurface,
-                    actionIconContentColor = RescueMeshColors.OnSurface
-                )
-            )
-        },
-        bottomBar = {
-            Column {
-                // Chat input - visible cuando showChatInput es true
-                if (showChatInput) {
-                    ChatInputBar(
-                        message = chatMessage,
-                        onMessageChange = { chatMessage = it },
-                        onSend = {
-                            if (chatMessage.isNotBlank()) {
-                                onSendChat(chatMessage)
-                                chatMessage = ""
-                                showChatInput = false
-                            }
-                        },
-                        onClose = { 
-                            showChatInput = false
-                            chatMessage = ""
-                        }
-                    )
-                }
-                
-                ActionBar(
-                    onSendSos = onSendSos,
-                    onSendImOk = onSendImOk,
-                    onSendResource = onSendResource,
-                    onSendDanger = onSendDanger,
-                    onSendChat = { showChatInput = !showChatInput },
-                    isChatOpen = showChatInput
-                )
-            }
-        },
-        containerColor = RescueMeshColors.Background
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            // Banner de estado de red siempre visible
-            NetworkStatusBanner(
-                isAdvertising = isAdvertising,
-                isDiscovering = isDiscovering,
-                connectedPeers = connectedPeers,
-                onClick = onShowNetworkStatus
-            )
-            
-            if (messages.isEmpty()) {
-                // Empty state
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(32.dp)
-                    ) {
-                        Text(
-                            text = "",
-                            fontSize = 64.sp
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = strings.noMessagesYet,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = RescueMeshColors.OnBackground
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = strings.sendFirstMessage,
-                            fontSize = 14.sp,
-                            color = RescueMeshColors.OnBackground.copy(alpha = 0.7f),
-                            lineHeight = 20.sp
-                        )
-                    }
-                }
-            } else {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(messages) { message ->
-                        MessageCard(message)
-                    }
-                }
-            }
-        }
-    }
-}
-
-/**
- * Network status banner always visible in the room
- */
-@Composable
-private fun NetworkStatusBanner(
-    isAdvertising: Boolean,
-    isDiscovering: Boolean,
-    connectedPeers: Int,
-    onClick: () -> Unit
-) {
-    val strings = rememberStrings()
-    val currentLanguage by LanguageManager.currentLanguage.collectAsState()
-    val isEnglish = currentLanguage == LanguageManager.Language.ENGLISH
+    val listState = rememberLazyListState()
     
     val isActive = isAdvertising || isDiscovering
-    val statusColor = when {
-        isAdvertising && isDiscovering -> RescueMeshColors.Success
-        isActive -> RescueMeshColors.Warning
-        else -> RescueMeshColors.Danger
-    }
+    val statusColor by animateColorAsState(
+        targetValue = when {
+            isAdvertising && isDiscovering -> RescueMeshColors.Success
+            isActive -> RescueMeshColors.Warning
+            else -> RescueMeshColors.Danger
+        },
+        animationSpec = tween(300)
+    )
     
-    Surface(
-        onClick = onClick,
-        color = statusColor.copy(alpha = 0.15f),
-        modifier = Modifier.fillMaxWidth()
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(RescueMeshColors.Background)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Animated indicator
-            Box(
-                modifier = Modifier
-                    .size(10.dp)
-                    .clip(CircleShape)
-                    .background(statusColor)
-            )
-            
-            Spacer(modifier = Modifier.width(12.dp))
-            
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = " Nearby Connections: ${if (isActive) strings.active.uppercase() else strings.inactive.uppercase()}",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 13.sp,
-                    color = statusColor
-                )
-                Text(
-                    text = buildString {
-                        if (isAdvertising) append(if (isEnglish) "Signal: Visible" else "Signal: Visible")
-                        if (isAdvertising && isDiscovering) append(" | ")
-                        if (isDiscovering) append(if (isEnglish) " Searching" else " Buscando")
-                        append(" | $connectedPeers peers")
-                    },
-                    fontSize = 11.sp,
-                    color = RescueMeshColors.OnSurface.copy(alpha = 0.7f)
-                )
+        Column(modifier = Modifier.fillMaxSize()) {
+            // Header
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = RescueMeshColors.Surface,
+                shadowElevation = 1.dp
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .statusBarsPadding()
+                        .padding(horizontal = 12.dp, vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(36.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(statusColor.copy(alpha = 0.15f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(10.dp)
+                                .clip(CircleShape)
+                                .background(statusColor)
+                        )
+                    }
+                    
+                    Spacer(modifier = Modifier.width(10.dp))
+                    
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = room.name,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = RescueMeshColors.OnSurface,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = "$connectedPeers connected",
+                            fontSize = 12.sp,
+                            color = RescueMeshColors.OnSurfaceVariant
+                        )
+                    }
+                    
+                    IconButton(onClick = onShowRoomInfo, modifier = Modifier.size(36.dp)) {
+                        Icon(Icons.Default.Share, "Share", tint = RescueMeshColors.OnSurfaceVariant, modifier = Modifier.size(20.dp))
+                    }
+                    
+                    IconButton(onClick = { showMenu = true }, modifier = Modifier.size(36.dp)) {
+                        Icon(Icons.Default.MoreVert, "Menu", tint = RescueMeshColors.OnSurfaceVariant, modifier = Modifier.size(20.dp))
+                    }
+                    
+                    DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
+                        DropdownMenuItem(
+                            text = { Text("Summary", fontSize = 14.sp) },
+                            onClick = { showMenu = false; onShowAISummary() },
+                            leadingIcon = { Text("📊", fontSize = 16.sp) }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Network", fontSize = 14.sp) },
+                            onClick = { showMenu = false; onShowNetworkStatus() },
+                            leadingIcon = { Icon(Icons.Default.Settings, null, modifier = Modifier.size(18.dp)) }
+                        )
+                        HorizontalDivider()
+                        DropdownMenuItem(
+                            text = { Text("Leave", fontSize = 14.sp, color = RescueMeshColors.Danger) },
+                            onClick = { showMenu = false; onLeaveRoom() },
+                            leadingIcon = { Icon(Icons.AutoMirrored.Filled.ExitToApp, null, tint = RescueMeshColors.Danger, modifier = Modifier.size(18.dp)) }
+                        )
+                    }
+                }
             }
             
-            Text(
-                text = if (isEnglish) "See details →" else "Ver detalles →",
-                fontSize = 11.sp,
-                color = statusColor
-            )
-        }
-    }
-}
-
-@Composable
-private fun ActionBar(
-    onSendSos: () -> Unit,
-    onSendImOk: () -> Unit,
-    onSendResource: () -> Unit,
-    onSendDanger: () -> Unit,
-    onSendChat: () -> Unit,
-    isChatOpen: Boolean
-) {
-    val strings = rememberStrings()
-    
-    Surface(
-        color = RescueMeshColors.Surface,
-        shadowElevation = 8.dp
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            // SOS Button
-            ActionButton(
-                emoji = "",
-                label = strings.sendSos,
-                color = RescueMeshColors.Danger,
-                onClick = onSendSos
-            )
-            
-            // I'm OK Button
-            ActionButton(
-                emoji = "OK:",
-                label = strings.imOk,
-                color = RescueMeshColors.Success,
-                onClick = onSendImOk
-            )
-            
-            // Chat Button
-            ActionButton(
-                emoji = "Chat:",
-                label = "Chat",
-                color = if (isChatOpen) RescueMeshColors.Primary else RescueMeshColors.Surface,
-                onClick = onSendChat,
-                outlined = !isChatOpen
-            )
-            
-            // Resource Request
-            ActionButton(
-                emoji = "Package:",
-                label = strings.requestResources,
-                color = RescueMeshColors.Info,
-                onClick = onSendResource
-            )
-            
-            // Danger Report
-            ActionButton(
-                emoji = "WARNING:",
-                label = strings.reportDanger,
-                color = RescueMeshColors.Warning,
-                onClick = onSendDanger
-            )
-        }
-    }
-}
-
-@Composable
-private fun ActionButton(
-    emoji: String,
-    label: String,
-    color: Color,
-    onClick: () -> Unit,
-    outlined: Boolean = false
-) {
-    if (outlined) {
-        OutlinedButton(
-            onClick = onClick,
-            shape = RoundedCornerShape(12.dp),
-            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 6.dp),
-            border = ButtonDefaults.outlinedButtonBorder.copy(
-                brush = androidx.compose.ui.graphics.SolidColor(RescueMeshColors.Primary)
-            )
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(emoji, fontSize = 20.sp)
-                Text(label, fontSize = 10.sp, fontWeight = FontWeight.Medium, color = RescueMeshColors.OnSurface)
-            }
-        }
-    } else {
-        Button(
-            onClick = onClick,
-            colors = ButtonDefaults.buttonColors(containerColor = color),
-            shape = RoundedCornerShape(12.dp),
-            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 6.dp)
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(emoji, fontSize = 20.sp)
-                Text(label, fontSize = 10.sp, fontWeight = FontWeight.Medium)
-            }
-        }
-    }
-}
-
-@Composable
-private fun ChatInputBar(
-    message: String,
-    onMessageChange: (String) -> Unit,
-    onSend: () -> Unit,
-    onClose: () -> Unit
-) {
-    val currentLanguage by LanguageManager.currentLanguage.collectAsState()
-    val isEnglish = currentLanguage == LanguageManager.Language.ENGLISH
-    
-    Surface(
-        color = RescueMeshColors.Primary.copy(alpha = 0.1f),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Close button
-            IconButton(
-                onClick = onClose,
-                modifier = Modifier.size(40.dp)
-            ) {
-                Icon(
-                    Icons.Default.Close,
-                    contentDescription = if (isEnglish) "Close" else "Cerrar",
-                    tint = RescueMeshColors.OnBackground
-                )
+            // Messages
+            Box(modifier = Modifier.weight(1f)) {
+                if (messages.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text("📭", fontSize = 40.sp)
+                            Spacer(modifier = Modifier.height(12.dp))
+                            Text("No messages yet", fontSize = 15.sp, fontWeight = FontWeight.Medium, color = RescueMeshColors.OnBackground)
+                            Text("Use the buttons below to send", fontSize = 13.sp, color = RescueMeshColors.OnSurfaceVariant)
+                        }
+                    }
+                } else {
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(messages) { message -> MessageCard(message) }
+                    }
+                }
             }
             
-            // Text input
-            OutlinedTextField(
-                value = message,
-                onValueChange = onMessageChange,
-                modifier = Modifier
-                    .weight(1f)
-                    .height(52.dp),
-                placeholder = { 
-                    Text(
-                        if (isEnglish) "Type a message..." else "Escribe un mensaje...",
-                        color = RescueMeshColors.OnBackground.copy(alpha = 0.5f),
-                        fontSize = 14.sp
-                    ) 
-                },
-                singleLine = true,
-                shape = RoundedCornerShape(24.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = RescueMeshColors.Primary,
-                    unfocusedBorderColor = RescueMeshColors.OnBackground.copy(alpha = 0.3f),
-                    focusedTextColor = RescueMeshColors.OnBackground,
-                    unfocusedTextColor = RescueMeshColors.OnBackground,
-                    focusedContainerColor = RescueMeshColors.Surface,
-                    unfocusedContainerColor = RescueMeshColors.Surface,
-                    cursorColor = RescueMeshColors.Primary
-                ),
-                textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp)
-            )
-            
-            Spacer(modifier = Modifier.width(8.dp))
-            
-            // Send button
-            IconButton(
-                onClick = onSend,
-                modifier = Modifier
-                    .size(44.dp)
-                    .clip(CircleShape)
-                    .background(
-                        if (message.isNotBlank()) 
-                            RescueMeshColors.Primary 
-                        else 
-                            RescueMeshColors.Primary.copy(alpha = 0.3f)
-                    ),
-                enabled = message.isNotBlank()
+            // Chat Input
+            AnimatedVisibility(
+                visible = showChatInput,
+                enter = slideInVertically(initialOffsetY = { it }),
+                exit = slideOutVertically(targetOffsetY = { it })
             ) {
-                Icon(
-                    @Suppress("DEPRECATION")
-                    Icons.Default.Send,
-                    contentDescription = if (isEnglish) "Send" else "Enviar",
-                    tint = Color.White
-                )
+                Surface(modifier = Modifier.fillMaxWidth(), color = RescueMeshColors.Surface) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(onClick = { showChatInput = false; chatMessage = "" }) {
+                            Icon(Icons.Default.Close, "Close", tint = RescueMeshColors.OnSurfaceVariant)
+                        }
+                        
+                        OutlinedTextField(
+                            value = chatMessage,
+                            onValueChange = { chatMessage = it },
+                            modifier = Modifier.weight(1f),
+                            placeholder = { Text("Message...", fontSize = 14.sp, color = RescueMeshColors.TextHint) },
+                            singleLine = true,
+                            shape = RoundedCornerShape(20.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = RescueMeshColors.Primary,
+                                unfocusedBorderColor = RescueMeshColors.Divider
+                            ),
+                            textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp)
+                        )
+                        
+                        Spacer(modifier = Modifier.width(8.dp))
+                        
+                        IconButton(
+                            onClick = {
+                                if (chatMessage.isNotBlank()) {
+                                    onSendChat(chatMessage)
+                                    chatMessage = ""
+                                    showChatInput = false
+                                }
+                            },
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .background(if (chatMessage.isNotBlank()) RescueMeshColors.Primary else RescueMeshColors.Divider)
+                        ) {
+                            Icon(Icons.AutoMirrored.Filled.Send, "Send", tint = Color.White, modifier = Modifier.size(18.dp))
+                        }
+                    }
+                }
+            }
+            
+            // Action Bar - All buttons visible
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                color = RescueMeshColors.Surface,
+                shadowElevation = 4.dp
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .navigationBarsPadding()
+                        .padding(horizontal = 12.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    // SOS Button
+                    Button(
+                        onClick = onSendSos,
+                        modifier = Modifier.weight(1f).height(44.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = RescueMeshColors.Danger),
+                        shape = RoundedCornerShape(10.dp),
+                        contentPadding = PaddingValues(horizontal = 8.dp)
+                    ) {
+                        Text("🆘 SOS", fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                    }
+                    
+                    // I'm OK Button
+                    OutlinedButton(
+                        onClick = onSendImOk,
+                        modifier = Modifier.weight(1f).height(44.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = RescueMeshColors.Success),
+                        border = androidx.compose.foundation.BorderStroke(1.5.dp, RescueMeshColors.Success),
+                        contentPadding = PaddingValues(horizontal = 4.dp)
+                    ) {
+                        Text("✓ I'm OK", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                    }
+                    
+                    // Chat Button
+                    OutlinedButton(
+                        onClick = { showChatInput = !showChatInput },
+                        modifier = Modifier.weight(0.7f).height(44.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            containerColor = if (showChatInput) RescueMeshColors.Primary.copy(alpha = 0.1f) else Color.Transparent,
+                            contentColor = RescueMeshColors.Primary
+                        ),
+                        border = androidx.compose.foundation.BorderStroke(1.5.dp, RescueMeshColors.Primary),
+                        contentPadding = PaddingValues(0.dp)
+                    ) {
+                        Text("💬", fontSize = 18.sp)
+                    }
+                    
+                    // More Button
+                    var showMore by remember { mutableStateOf(false) }
+                    Box {
+                        OutlinedButton(
+                            onClick = { showMore = true },
+                            modifier = Modifier.size(44.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = RescueMeshColors.OnSurfaceVariant),
+                            border = androidx.compose.foundation.BorderStroke(1.5.dp, RescueMeshColors.Divider),
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Text("•••", fontSize = 14.sp)
+                        }
+                        
+                        DropdownMenu(expanded = showMore, onDismissRequest = { showMore = false }) {
+                            DropdownMenuItem(
+                                text = { Text("Request resources", fontSize = 14.sp) },
+                                onClick = { showMore = false; onSendResource() },
+                                leadingIcon = { Text("📦", fontSize = 16.sp) }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Report danger", fontSize = 14.sp) },
+                                onClick = { showMore = false; onSendDanger() },
+                                leadingIcon = { Text("⚠️", fontSize = 16.sp) }
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -493,10 +309,6 @@ private fun ChatInputBar(
 
 @Composable
 private fun MessageCard(message: MeshMessage) {
-    val strings = rememberStrings()
-    val currentLanguage by LanguageManager.currentLanguage.collectAsState()
-    val isEnglish = currentLanguage == LanguageManager.Language.ENGLISH
-    
     val priorityColor = when (message.priority) {
         MessagePriority.CRITICAL -> RescueMeshColors.PriorityCritical
         MessagePriority.HIGH -> RescueMeshColors.PriorityHigh
@@ -507,111 +319,55 @@ private fun MessageCard(message: MeshMessage) {
     
     val (emoji, title, content) = when (val c = message.content) {
         is MessageContent.Sos -> Triple(
-            "",
-            "${strings.messageTypeSos} - ${getSosCategoryText(c.category, isEnglish)}",
-            "${c.description}\n${c.peopleCount} ${if (c.peopleCount == 1) strings.person else strings.people}"
+            "🆘",
+            getSosCategoryText(c.category),
+            if (c.peopleCount > 1) "${c.peopleCount} people" else ""
         )
-        is MessageContent.ImOk -> Triple(
-            "OK:",
-            strings.messageTypeImOk,
-            c.message
-        )
-        is MessageContent.ResourceRequest -> Triple(
-            "Package:",
-            "${if (isEnglish) "Request" else "Solicitud"}: ${getResourceTypeText(c.resourceType, isEnglish)}",
-            "${c.description}\n${strings.quantity}: ${c.quantity}${if (c.urgent) " Electrical: ${strings.urgent.uppercase()}" else ""}"
-        )
-        is MessageContent.DangerReport -> Triple(
-            "WARNING:",
-            "${if (isEnglish) "Danger" else "Peligro"}: ${getDangerTypeText(c.dangerType, isEnglish)}",
-            "${c.description}\n${strings.severity}: ${c.severity}/10${if (c.isBlocking) " Blocked: ${strings.blocksPassage}" else ""}"
-        )
-        is MessageContent.Chat -> Triple(
-            "Chat:",
-            strings.messageTypeChat,
-            c.text
-        )
+        is MessageContent.ImOk -> Triple("✅", "I'm OK", c.message.takeIf { it != "Estoy bien" && it != "I'm OK" } ?: "")
+        is MessageContent.ResourceRequest -> Triple("📦", getResourceTypeText(c.resourceType), "Qty: ${c.quantity}${if (c.urgent) " • ⚡" else ""}")
+        is MessageContent.DangerReport -> Triple("⚠️", getDangerTypeText(c.dangerType), if (c.isBlocking) "🚫 Blocks access" else "")
+        is MessageContent.Chat -> Triple("💬", "", c.text)
     }
     
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = RescueMeshColors.Surface
-        ),
-        shape = RoundedCornerShape(12.dp)
+        colors = CardDefaults.cardColors(containerColor = RescueMeshColors.Surface),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Row(
-            modifier = Modifier.padding(12.dp),
-            verticalAlignment = Alignment.Top
-        ) {
-            // Indicador de prioridad
+        Row(modifier = Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.Top) {
             Box(
                 modifier = Modifier
-                    .size(8.dp)
-                    .clip(CircleShape)
-                    .background(priorityColor)
-            )
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(priorityColor.copy(alpha = 0.12f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(emoji, fontSize = 20.sp)
+            }
             
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(10.dp))
             
             Column(modifier = Modifier.weight(1f)) {
-                // Header
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(emoji, fontSize = 20.sp)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = title,
-                            fontWeight = FontWeight.Bold,
-                            color = RescueMeshColors.OnSurface,
-                            fontSize = 15.sp
-                        )
+                        Text(message.senderName, fontWeight = FontWeight.SemiBold, color = RescueMeshColors.OnSurface, fontSize = 13.sp)
+                        if (message.hopCount > 0) {
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("↗${message.hopCount}", fontSize = 10.sp, color = RescueMeshColors.OnSurfaceVariant,
+                                modifier = Modifier.background(RescueMeshColors.SurfaceVariant, RoundedCornerShape(3.dp)).padding(horizontal = 3.dp))
+                        }
                     }
+                    Text(formatTime(message.timestamp), fontSize = 11.sp, color = RescueMeshColors.OnSurfaceVariant)
                 }
                 
-                Spacer(modifier = Modifier.height(4.dp))
+                if (title.isNotEmpty()) {
+                    Text(title, fontWeight = FontWeight.Medium, color = priorityColor, fontSize = 14.sp)
+                }
                 
-                // Sender
-                Text(
-                    text = "De: ${message.senderName}",
-                    fontSize = 12.sp,
-                    color = RescueMeshColors.OnSurface.copy(alpha = 0.7f)
-                )
-                
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                // Content
-                Text(
-                    text = content,
-                    fontSize = 14.sp,
-                    color = RescueMeshColors.OnSurface,
-                    lineHeight = 20.sp
-                )
-                
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                // Footer
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = formatTime(message.timestamp),
-                        fontSize = 11.sp,
-                        color = RescueMeshColors.OnSurface.copy(alpha = 0.5f)
-                    )
-                    
-                    if (message.hopCount > 0) {
-                        Text(
-                            text = " ${message.hopCount} ${if (isEnglish) "hop(s)" else "salto(s)"}",
-                            fontSize = 11.sp,
-                            color = RescueMeshColors.OnSurface.copy(alpha = 0.5f)
-                        )
-                    }
+                if (content.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(content, fontSize = 13.sp, color = RescueMeshColors.OnSurface.copy(alpha = 0.8f))
                 }
             }
         }
@@ -624,36 +380,36 @@ private fun formatTime(timestamp: Long): String {
     return "${localDateTime.hour.toString().padStart(2, '0')}:${localDateTime.minute.toString().padStart(2, '0')}"
 }
 
-private fun getSosCategoryText(category: SosCategory, isEnglish: Boolean): String = when (category) {
-    SosCategory.MEDICAL -> if (isEnglish) "Medical" else "Médico"
-    SosCategory.FIRE -> if (isEnglish) "Fire" else "Fuego"
-    SosCategory.TRAPPED -> if (isEnglish) "Trapped" else "Atrapado"
-    SosCategory.CHILDREN -> if (isEnglish) "Children" else "Niños"
-    SosCategory.ELDERLY -> if (isEnglish) "Elderly" else "Adulto mayor"
-    SosCategory.INJURED -> if (isEnglish) "Injured" else "Herido"
-    SosCategory.OTHER -> if (isEnglish) "Other" else "Otro"
+private fun getSosCategoryText(category: SosCategory): String = when (category) {
+    SosCategory.MEDICAL -> "Medical emergency"
+    SosCategory.FIRE -> "Fire"
+    SosCategory.TRAPPED -> "Trapped"
+    SosCategory.CHILDREN -> "Children in danger"
+    SosCategory.ELDERLY -> "Elderly"
+    SosCategory.INJURED -> "Injured"
+    SosCategory.OTHER -> "Emergency"
 }
 
-private fun getResourceTypeText(type: ResourceType, isEnglish: Boolean): String = when (type) {
-    ResourceType.WATER -> if (isEnglish) "Water" else "Agua"
-    ResourceType.FOOD -> if (isEnglish) "Food" else "Comida"
-    ResourceType.FIRST_AID -> if (isEnglish) "First Aid" else "Botiquín"
-    ResourceType.TRANSPORT -> if (isEnglish) "Transport" else "Transporte"
-    ResourceType.SHELTER -> if (isEnglish) "Shelter" else "Refugio"
-    ResourceType.BLANKETS -> if (isEnglish) "Blankets" else "Mantas"
-    ResourceType.FLASHLIGHT -> if (isEnglish) "Flashlight" else "Linterna"
-    ResourceType.BATTERY -> if (isEnglish) "Battery" else "Baterías"
-    ResourceType.MEDICINE -> if (isEnglish) "Medicine" else "Medicinas"
-    ResourceType.OTHER -> if (isEnglish) "Other" else "Otro"
+private fun getResourceTypeText(type: ResourceType): String = when (type) {
+    ResourceType.WATER -> "Water"
+    ResourceType.FOOD -> "Food"
+    ResourceType.FIRST_AID -> "First Aid"
+    ResourceType.TRANSPORT -> "Transport"
+    ResourceType.SHELTER -> "Shelter"
+    ResourceType.BLANKETS -> "Blankets"
+    ResourceType.FLASHLIGHT -> "Flashlight"
+    ResourceType.BATTERY -> "Batteries"
+    ResourceType.MEDICINE -> "Medicine"
+    ResourceType.OTHER -> "Other"
 }
 
-private fun getDangerTypeText(type: DangerType, isEnglish: Boolean): String = when (type) {
-    DangerType.FIRE -> if (isEnglish) "Fire" else "Fuego"
-    DangerType.COLLAPSE -> if (isEnglish) "Collapse" else "Derrumbe"
-    DangerType.FLOOD -> if (isEnglish) "Flood" else "Inundación"
-    DangerType.GAS_LEAK -> if (isEnglish) "Gas Leak" else "Fuga de gas"
-    DangerType.BLOCKED_ROAD -> if (isEnglish) "Blocked Road" else "Camino bloqueado"
-    DangerType.UNSAFE_BUILDING -> if (isEnglish) "Unsafe Building" else "Edificio inseguro"
-    DangerType.ELECTRICAL -> if (isEnglish) "Electrical Hazard" else "Peligro eléctrico"
-    DangerType.OTHER -> if (isEnglish) "Other" else "Otro"
+private fun getDangerTypeText(type: DangerType): String = when (type) {
+    DangerType.FIRE -> "Fire"
+    DangerType.COLLAPSE -> "Collapse"
+    DangerType.FLOOD -> "Flood"
+    DangerType.GAS_LEAK -> "Gas Leak"
+    DangerType.BLOCKED_ROAD -> "Blocked Road"
+    DangerType.UNSAFE_BUILDING -> "Unsafe Building"
+    DangerType.ELECTRICAL -> "Electrical Hazard"
+    DangerType.OTHER -> "Danger"
 }

@@ -43,7 +43,7 @@ fun App(viewModel: RescueMeshViewModel) {
             is Screen.CreateRoom -> {
                 CreateRoomScreen(
                     onBack = { viewModel.navigateTo(Screen.Welcome) },
-                    onCreate = { name, description ->
+                    onCreateRoom = { name, description ->
                         viewModel.createRoom(name, description)
                     }
                 )
@@ -52,8 +52,8 @@ fun App(viewModel: RescueMeshViewModel) {
             is Screen.JoinRoom -> {
                 JoinRoomScreen(
                     onBack = { viewModel.navigateTo(Screen.Welcome) },
-                    onJoin = { roomId, pin, roomName ->
-                        viewModel.joinRoom(roomId, pin, roomName)
+                    onJoinRoom = { roomCode ->
+                        viewModel.joinRoom(roomCode, "", roomCode)
                     }
                 )
             }
@@ -85,7 +85,7 @@ fun App(viewModel: RescueMeshViewModel) {
             is Screen.SendSos -> {
                 SendSosScreen(
                     onBack = { viewModel.navigateTo(Screen.Room) },
-                    onSend = { category, description, peopleCount ->
+                    onSend = { category, peopleCount, description ->
                         viewModel.sendSos(category, description, peopleCount, null, null)
                         viewModel.navigateTo(Screen.Room)
                     }
@@ -105,8 +105,8 @@ fun App(viewModel: RescueMeshViewModel) {
             is Screen.SendDangerReport -> {
                 SendDangerReportScreen(
                     onBack = { viewModel.navigateTo(Screen.Room) },
-                    onSend = { dangerType, severity, description, isBlocking ->
-                        viewModel.sendDangerReport(dangerType, severity, description, isBlocking, null, null)
+                    onSend = { dangerType, isBlocking, description ->
+                        viewModel.sendDangerReport(dangerType, 1, description, isBlocking, null, null)
                         viewModel.navigateTo(Screen.Room)
                     }
                 )

@@ -18,6 +18,9 @@ kotlin {
         }
     }
     
+    // Desktop (JVM) target - Windows, Linux, macOS
+    jvm("desktop")
+    
     // iOS targets
     listOf(
         iosX64(),
@@ -31,6 +34,8 @@ kotlin {
     }
     
     sourceSets {
+        val desktopMain by getting
+        
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
@@ -38,6 +43,11 @@ kotlin {
             implementation(libs.play.services.nearby)
             implementation(libs.play.services.location)
             implementation(libs.zxing.core)
+        }
+        
+        desktopMain.dependencies {
+            implementation(compose.desktop.currentOs)
+            implementation(libs.kotlinx.coroutines.swing)
         }
         
         iosMain.dependencies {
@@ -116,4 +126,30 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+}
+
+// Desktop application configuration
+compose.desktop {
+    application {
+        mainClass = "com.rescuemesh.app.MainKt"
+        
+        nativeDistributions {
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "RescueMesh"
+            packageVersion = "1.0.0"
+            description = "Offline Emergency Communication Network"
+            vendor = "RescueMesh Team"
+            
+            linux {
+                iconFile.set(project.file("src/desktopMain/resources/icon.png"))
+            }
+            windows {
+                iconFile.set(project.file("src/desktopMain/resources/icon.ico"))
+                menuGroup = "RescueMesh"
+            }
+            macOS {
+                iconFile.set(project.file("src/desktopMain/resources/icon.icns"))
+            }
+        }
+    }
 }
